@@ -299,4 +299,4 @@ defaults:
       toc_sticky: true
       toc_label: 
       toc_icon: "fa-solid fa-list" #https://fontawesome.com/v5/search?o=r&m=free&s=solid 아이콘 링크
-      
+      typora-root-url: ../
