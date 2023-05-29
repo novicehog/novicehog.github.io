@@ -11,7 +11,7 @@ author_profile: true # 옆에뜨는 프로파일
 search: true #검색해도 안뜨게함
 
 date: 2023-05-24
-last_modified_at: 2023-05-24
+last_modified_at: 2023-05-26
 
 ---
 
@@ -54,3 +54,34 @@ last_modified_at: 2023-05-24
 - she turned `on` the TV. `on`가 목적어와 가까우므로 가능 **<font color = "sky blue">O</font>**
 - she turned the TV `on`. 부사가 목적어의 뒤로가도 똑같이 가까움으로 가능  **<font color = "sky blue">O</font>**
 - 부사는 목적어 앞 뒤 아무곳이나 위치할 수 있다.
+
+### 주체가 대명사일 경우
+- 주체가 대명사일 경우 문장의 의미를 확실히 구분시켜줘야함
+- 위치만 보더라도 전치사로써 주어를 꾸며주는지, 부사로써 목적어를 꾸며주는지 한 눈에 볼 수 있어야함.
+- 주체가 목적어인 부사의 경우 무조건 부사가 뒤로 가야함.
+* `ex) We need to turn around the mount -> We need to turn around it` 전치사이기에 바뀌지 않음
+* `ex) turn off the TV -> turn it off` 목적어를 꾸며주는 부사이기에 무조건 뒤로 가야함
+
+
+## 연습 문제
+
+
+<details>
+<summary> she passed by him에서 by는?</summary>
+<div markdown="1">       
+
+전치사
+그녀가 passed by의 주체임
+
+</div>
+</details>
+
+<details>
+<summary> there is a huge ant! check out this out 에서 틀린부분</summary>
+<div markdown="1">       
+
+부사로 쓰이면서 대명사가 사용되었으니 out이 this 뒤로가야함
+check this out
+
+</div>
+</details>
