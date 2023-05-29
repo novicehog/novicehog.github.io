@@ -347,3 +347,17 @@ switch문이 아니라도 사용가능
 
 ### 위치 패턴
 {: .H3-font}
+
+- 식의 결과를 분해(Deconstruct)하고, 분해된 값들이 내장된 복수의 패턴과 일치하는지를 검사.
+- 내장되는 패턴에는 형식 패턴, 상수 패턴 등 모든 패턴 사용 가능.
+
+[**Tuple 개념은 여기서 볼 수 있음.**](https://www.youtube.com/watch?v=QofCu147658)
+
+```c#
+var r = ("age", 30); // tuple
+
+if ( r is ("age" , >25)) // tuple의 속성 값을 분해하여 각각 비교 
+{
+    Console.WriteLine("나이가 25보다 큽니다");
+}
+```
