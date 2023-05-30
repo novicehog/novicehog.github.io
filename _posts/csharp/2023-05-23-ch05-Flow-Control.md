@@ -10,7 +10,7 @@ published: true
 author_profile: true # 옆에뜨는 프로파일
 
 date: 2023-05-23
-last_modified_at: 2023-05-23
+last_modified_at: 2023-05-30
 ---
 이 글은 한빛미디어의 **이것이 C#이다**를 보고 공부한 내용을 정리한 글입니다.
 {: .notice--warning}
@@ -351,7 +351,7 @@ switch문이 아니라도 사용가능
 - 식의 결과를 분해(Deconstruct)하고, 분해된 값들이 내장된 복수의 패턴과 일치하는지를 검사.
 - 내장되는 패턴에는 형식 패턴, 상수 패턴 등 모든 패턴 사용 가능.
 
-[**Tuple 개념은 여기서 볼 수 있음.**](https://www.youtube.com/watch?v=QofCu147658)
+[**Tuple 개념은 여기서 볼 수 있음.**](https://novicehog.github.io/c%20sharp/Tuple/)
 
 ```c#
 var r = ("age", 30); // tuple
@@ -360,4 +360,37 @@ if ( r is ("age" , >25)) // tuple의 속성 값을 분해하여 각각 비교
 {
     Console.WriteLine("나이가 25보다 큽니다");
 }
+```
+
+### var 패턴
+{: .H3-font}
+- var 패턴은 모든 식의 패턴 매칭을 성공시키고, 그 식의 결과를 var 변수에 할당함
+- 쉽게 말해 무조건 true를 반환하고 임시 변수에 어떤 식의 값을 할당해놓는 것
+```c#
+        int? r = null;
+
+        if(r is var average) // null을 식으로 넣어도 패턴 매칭 성공
+        {
+            Console.WriteLine(average); // 아무것도 없는것을 출력하기에 줄넘김만 출력
+            Console.WriteLine(r is var a); //true출력
+        }
+```
+
+### 무시 패턴
+- 무시 패턴도 var패턴 처럼 모든 식의 패턴 매칭을 성공시킴.
+- is를 이용한 식에서 사용 불가능, switch식에서만 사용 가능
+- switch식에서 사용한 `_`이 무시 패턴이다.
+
+### 목록 패턴
+- 배열이나 리스트가 패턴의 시퀀스가 일치하는지를 검사.
+- `대괄호 []` 사이에 패턴의 목록을 입력해서 만듬.
+
+```c#
+        int[] a = new int[2] {1,10};
+
+        if (a is [int, > 9]) {Console.WriteLine("배열 매칭 성공");} // 이 부분이 출력
+        else{Console.WriteLine("배열 매칭 실패 ");}
+
+        if (a is [int, > 10]){Console.WriteLine("배열 매칭 성공 ");}
+        else{Console.WriteLine("배열 매칭 실패 ");} //이 부분이 출력
 ```
