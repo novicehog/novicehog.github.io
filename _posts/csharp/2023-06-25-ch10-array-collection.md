@@ -705,7 +705,7 @@ class MyList : IEnumerable, IEnumerator
     }
 
     // IEnumerator 멤버
-		// 현재 위치를 반환하는 프로퍼티
+    // 현재 위치를 반환하는 프로퍼티
     public object Current
     {
         get
@@ -715,7 +715,7 @@ class MyList : IEnumerable, IEnumerator
     }
 
     // IEnumrator 멤버
-		// 이동을 구현. 컬렉션의 끝을 지난 경우 false, 이동이 성공한 경우 true반환
+	// 이동을 구현. 컬렉션의 끝을 지난 경우 false, 이동이 성공한 경우 true반환
     public bool MoveNext()
     {
         if(position == array.Length - 1)
@@ -729,7 +729,7 @@ class MyList : IEnumerable, IEnumerator
     }
 
     // IEnumerator 멤버
-		// 첫 번째 위치의 '앞'으로 이동
+	// 첫 번째 위치의 '앞'으로 이동
     public void Reset()
     {
         position = -1;
