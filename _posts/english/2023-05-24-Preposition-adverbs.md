@@ -4,7 +4,8 @@ title:  "전치사와 부사의 차이"
 categories: 
     - English
 tag: [English, grammer]
-published: true
+
+published : false
 
 author_profile: true # 옆에뜨는 프로파일
 

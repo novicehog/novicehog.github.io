@@ -6,7 +6,8 @@ title:  "Configuration 해석"
 categories: 
     - blog
 tag: [blog, minimal mistakes]
-published: true
+
+published : false
 
 
 toc: true #테이블
