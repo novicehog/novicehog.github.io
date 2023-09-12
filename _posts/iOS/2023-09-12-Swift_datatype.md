@@ -125,7 +125,7 @@ val constantName: Int = 10
 ### print 함수
 {: .H2-font}
 
-![print](https://github.com/novicehog/UnityProject02/assets/131991619/54950e46-2711-429d-8d6a-4d4f2ce32cc0)
+![print](https://github.com/novicehog/NetworkProject/assets/131991619/a2fa612f-7221-4276-89e0-301fd62fd471)
 
 swift의 print 함수는 몇 개의 인자든 받아서 출력할 수 있고
 
