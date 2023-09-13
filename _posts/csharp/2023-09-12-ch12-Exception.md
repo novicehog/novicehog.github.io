@@ -239,7 +239,6 @@ catch (ArgumentException e)
 이럴 때 finally를 통해 뒷 마무리를 처리할 수 있다.
 
 finally문은 `예외가 발생하든 안하든  try문이 실행되기만 하면 finally문도 실행`되며,
-
 심지어 `try문에서 return나 throw을 하여도 실행`된다.
 
  (return과 throw 이 두 문장은 프로그램의 흐름 제어를 외부 코드로 옮김)
