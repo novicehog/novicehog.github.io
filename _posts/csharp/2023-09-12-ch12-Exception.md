@@ -100,3 +100,167 @@ Console.WriteLine("종료");
 ```
 
 ## System.Exception 클래스
+
+모든 예외 클래스의 조상이다.
+앞에서 사용한 `IndexOutOfRangeException`클래스도 이 클래스를 상속받았다고 볼 수 있음
+
+그러므로 System.Exception 을 사용하면 모든 예외를 전부 받아낼 수 있게됨
+
+즉, 플레이어가 계산하지 않은 예외도 받아내게 됨
+
+다음과 같은 예외 처리도
+
+```csharp
+try
+{
+}
+catch(IndexOutOfRangeException e)
+{
+	//...
+}
+catch(DivideByZeroException e)
+{
+	//...
+}
+```
+<br/>
+
+Exception 으로 한 번에 받을 수 있다.
+
+```csharp
+try
+{
+}
+catch(Exception e)
+{
+	//...
+}
+```
+
+하지만 예외 상황에 따라 섬세한 예외 처리가 필요한 코드에서는 `Exception 클래스` 만으로는
+
+대응하기 어려우므로, 귀찮다고 무조건 `Exception 클래스`를 사용하는 것은 좋지 않음.
+
+
+## 예외 던지기
+
+
+`try~catch` 문으로 예외를 받는다는 것은 어디선가 `예외를 던진다`는 의미임
+
+예외는 `throw 문` 을 이용해서 던짐
+
+다음은 기본적인 형태임
+
+```csharp
+try
+{
+	//...
+	throw new Exception("예외를 던집니다.");
+}
+catch(Exception e)
+{
+	Console.WriteLine(e.Message);
+		// 예외를 던집니다.
+}
+```
+
+<br/>
+
+다음과 같이 간단한 예외 던지기를 작성할 수 있음
+
+```csharp
+static void DoSomething(int arg)
+{
+    if (arg < 10)
+        Console.WriteLine("arg : {0}", arg);
+    else
+        throw new Exception("arg가 10보다 큽니다");
+}
+static void Main(string[] args)
+{
+    try
+    {
+        DoSomething(13);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
+}
+```
+
+### throw 식
+***
+
+C# 7.0부터는 throw식도 가능해짐
+
+```csharp
+static void Main(string[] args)
+{
+    try
+    {
+        int? a = null;
+        int b = a ?? throw new ArgumentException("옳지 않은 값입니다.");
+    }
+    catch (ArgumentException e)
+    {
+        Console.WriteLine(e.Message);
+        //옳지 않은 값입니다.
+    }
+}
+```
+
+## try~catch와 finally
+
+
+`try~catch` 에서 예외가 발생할 경우 나머지 코드를 마저 실행하지 않고
+
+바로 catch절으로 넘어오게 됨.
+
+이런 문제는 만들어둔 코드가 작동되지 않는 버그를 초래함.
+
+```csharp
+try
+{
+    int? a = null;
+    int b = a ?? throw new ArgumentException("옳지 않은 값입니다.");
+
+    Console.WriteLine("출력되지 않습니다"); // 이 부분이 실행되지 못함
+}
+catch (ArgumentException e)
+{
+    Console.WriteLine(e.Message);
+    //옳지 않은 값입니다.
+}
+```
+
+<br>
+
+이럴 때 finally를 통해 뒷 마무리를 처리할 수 있다.
+
+finally문은 `예외가 발생하든 안하든  try문이 실행되기만 하면 finally문도 실행`되며,
+
+심지어 `try문에서 return나 throw을 하여도 실행`된다.
+
+ (return과 throw 이 두 문장은 프로그램의 흐름 제어를 외부 코드로 옮김)
+
+```csharp
+static void Main(string[] args)
+{
+    try
+    {
+        int? a = null;
+        int b = a ?? throw new ArgumentException("옳지 않은 값입니다.");
+				// return; 에러발생이 안나고 리턴하여도 finally는 실행됨
+    }
+    catch (ArgumentException e)
+    {
+        Console.WriteLine(e.Message);
+        //옳지 않은 값입니다.
+    }
+    finally // 예외가 발생하든 안하든 마지막에 실행됨
+    {
+        Console.WriteLine("출력됩니다");
+    }
+}
+```
