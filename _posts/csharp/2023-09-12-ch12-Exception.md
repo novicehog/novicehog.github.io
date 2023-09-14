@@ -321,8 +321,8 @@ internal class Program
         foreach(uint arg in args)
         {
             if (arg > 255)
-								// 받은 값이 255 이상이면 예외를 던지고
-								// 정보를 저장함
+			    // 받은 값이 255 이상이면 예외를 던지고
+				// 정보를 저장함
                 throw new InvalidArgumentException()
                 {
                     Argument = arg,
@@ -330,7 +330,7 @@ internal class Program
                 };
         }
 				
-				// 예외 던짐이 없을 시 받은 값을 리턴해줌
+		// 예외 던짐이 없을 시 받은 값을 리턴해줌
         return  (alpha << 24 & 0xFF000000) |
                 (red   << 16 & 0x00FF0000) |
                 (green << 8  & 0x0000FF00) |
@@ -346,7 +346,7 @@ internal class Program
         }
         catch(InvalidArgumentException e)
         {
-						// 예외 발생시 직접 저장한 값을 같이 출력해줌
+			// 예외 발생시 직접 저장한 값을 같이 출력해줌
             Console.WriteLine(e.Message);
             Console.WriteLine($"Argument:{e.Argument}, Range:{e.Range}");
         }
@@ -358,4 +358,52 @@ internal class Program
 //0x141C080
 //Exception of type 'InvalidArgumentException' was thrown.
 //Argument:300, Range:0~255
+```
+
+
+## 예외 필터하기
+
+C# 6.0부터는 catch 절이 받아들일 예외 객체에 `제약 사항을 명시`해서 해당 `조건을 만족하는 예외 객체에 대해서만` 예외 처리 코드를 실행할 수 있도록 하는  `예외 필터`가 도입되었음.
+
+만드는 방법은 간단하게 catch절 뒤에 when 키워드를 이용해서 제약 조건을 기술할 수 있음.
+
+즉, 예외 발생에 대한 catch실행을 세분화 할 수 있음.
+
+다음 코드는 0~10의 값의 숫자만 받도록 설계된 간단한 코드이다.
+
+```csharp
+class MyException : Exception
+{
+    public int ErrorNo { get; set;}
+}
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Enter Number Between 0~10");
+        string input = Console.ReadLine();
+        try
+        {
+            int num = Int32.Parse(input);
+
+            if (num < 0 || num > 10)
+                throw new MyException() { ErrorNo = num };
+            else
+                Console.WriteLine($"Output : {num}");
+        }
+        catch (FormatException e) // 입력 값이 숫자가 아닐 경우
+        {
+            Console.WriteLine("숫자 변환이 불가능합니다" + e);
+        }
+        catch (MyException e) when (e.ErrorNo < 0) // 입력 값이 0 이하일 경우
+        {
+            Console.WriteLine("음수는 불가능합니다");
+        }
+        catch (MyException e) when (e.ErrorNo > 10) // 입력 값이 10 초과일 경우
+        {
+            Console.WriteLine("너무 큰 숫자는 불가능합니다");
+        }
+    }
+}
 ```
