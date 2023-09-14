@@ -263,3 +263,99 @@ static void Main(string[] args)
     }
 }
 ```
+
+
+## 사용자 정의 예외 클래스 만들기
+
+System.Exception 클래스를 상속 받아서  사용자 정의 예외 클래스를 만들 수 있다.
+
+```csharp
+class MyException : Exception
+{
+	//...
+}
+```
+
+사용자 정의 예외는 꼭 필요하지 않으나 다음과 같은 상황에 유용하게 사용할 수 있음
+
+- 특별한 데이터를 담아서 예외 처리 루틴에 추가 정보를 제공하고 싶을 때
+- 예외 상황을 더 잘 설명하고 싶을 때 사용
+
+다음은 사용자 예외 처리의 예시이다.
+
+ 0~255 사이의 값인 ARGB를 받아서 0~255사이의 값이 아닐 경우
+
+직접 만든 예외가 발생하도록 하는 코드이다.
+
+```csharp
+class InvalidArgumentException : Exception
+{
+    public InvalidArgumentException()
+    {
+    }
+
+    public InvalidArgumentException(string message) : base(message) 
+    {
+    }
+
+    public object Argument
+    {
+        get;
+        set;
+    }
+
+    public string Range
+    {
+        get;
+        set;
+    }
+}
+
+internal class Program
+{
+		// 정적 메소드 아무곳에서나 호출
+    static uint MergeARGB(uint alpha, uint red, uint green, uint blue) 
+    {
+        uint[] args = new uint[] { alpha, red, green, blue };
+
+        foreach(uint arg in args)
+        {
+            if (arg > 255)
+								// 받은 값이 255 이상이면 예외를 던지고
+								// 정보를 저장함
+                throw new InvalidArgumentException()
+                {
+                    Argument = arg,
+                    Range = "0~255"
+                };
+        }
+				
+				// 예외 던짐이 없을 시 받은 값을 리턴해줌
+        return  (alpha << 24 & 0xFF000000) |
+                (red   << 16 & 0x00FF0000) |
+                (green << 8  & 0x0000FF00) |
+                (blue        & 0x000000FF);
+    }
+    static void Main(string[] args)
+    {
+        try
+        {
+            Console.WriteLine("0x{0:X}", MergeARGB(255, 111, 111, 111));
+            Console.WriteLine("0x{0:X}", MergeARGB(1, 65, 192, 128));
+            Console.WriteLine("0x{0:X}", MergeARGB(0, 255, 255, 300)); //예외 발생
+        }
+        catch(InvalidArgumentException e)
+        {
+						// 예외 발생시 직접 저장한 값을 같이 출력해줌
+            Console.WriteLine(e.Message);
+            Console.WriteLine($"Argument:{e.Argument}, Range:{e.Range}");
+        }
+    }
+}
+
+//결과값
+//0xFF6F6F6F
+//0x141C080
+//Exception of type 'InvalidArgumentException' was thrown.
+//Argument:300, Range:0~255
+```
