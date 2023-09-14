@@ -9,7 +9,7 @@ published: true
 author_profile: true # 옆에뜨는 프로파일
 
 date: 2023-09-12
-last_modified_at: 2023-09-12
+last_modified_at: 2023-09-14
 ---
 <!-- 
 {: .notice--warning} // 알림 강조
@@ -136,6 +136,7 @@ catch(Exception e)
 	//...
 }
 ```
+<br/>
 
 하지만 예외 상황에 따라 섬세한 예외 처리가 필요한 코드에서는 `Exception 클래스` 만으로는
 
@@ -188,6 +189,7 @@ static void Main(string[] args)
     }
 }
 ```
+<br/>
 
 ### throw 식
 ***
@@ -209,6 +211,7 @@ static void Main(string[] args)
     }
 }
 ```
+<br/>
 
 ## try~catch와 finally
 
@@ -234,7 +237,7 @@ catch (ArgumentException e)
 }
 ```
 
-<br>
+<br/>
 
 이럴 때 finally를 통해 뒷 마무리를 처리할 수 있다.
 
@@ -263,7 +266,7 @@ static void Main(string[] args)
     }
 }
 ```
-
+<br/>
 
 ## 사용자 정의 예외 클래스 만들기
 
@@ -275,6 +278,7 @@ class MyException : Exception
 	//...
 }
 ```
+<br/>
 
 사용자 정의 예외는 꼭 필요하지 않으나 다음과 같은 상황에 유용하게 사용할 수 있음
 
@@ -359,7 +363,7 @@ internal class Program
 //Exception of type 'InvalidArgumentException' was thrown.
 //Argument:300, Range:0~255
 ```
-
+<br/>
 
 ## 예외 필터하기
 
@@ -407,3 +411,22 @@ internal class Program
     }
 }
 ```
+<br/>
+
+## 예외 처리 다시 생각해보기
+
+예외 처리를 사용해야 하는 이유는 다음과 같다.
+
+- try~catch문을 통해 `실제 일을 하는 코드`와 `문제를 처리하는 코드`를 `분리`시킴으로써 코드를 간결하게 만들어준다.
+- 예외 객체의 StackTrace 프로퍼티를 통해 문제가 발생한 부분의 소스코드를 알 수 있음
+
+```csharp
+catch (Exception e)
+{
+    Console.WriteLine(e.StackTrace);
+}
+```
+
+- `여러 문제점을 하나로 묶거나` 코드에서 발생할 수 있는 오류를 `종류별로 정리`해주는 효과가 있음
+예를 들어 try블록에서 `같은 형식의 예외를 일으키는 부분`이 `둘 이상`일 수 있지만, 그 처리를
+`공통 되는 형식의 catch블록 하나`로 처리할 수 있음.
