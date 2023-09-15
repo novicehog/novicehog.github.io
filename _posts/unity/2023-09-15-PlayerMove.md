@@ -49,9 +49,14 @@ edit -> project Setting -> Input System Package에서 다음과 같이 해줌
 ![image](https://github.com/novicehog/comments/assets/131991619/346017b8-1e55-4752-9e93-7ae5a7918d3d)
 
 ## Scripts
-<br>
+스크립트는 총 세개의 스크립트가 있다.
+**<span style="color:#44C9A1">InputHandler</span>** <br>
+**<span style="color:#44C9A1">AnimatorHandler</span>**<br>
+**<span style="color:#44C9A1">PlayerLocomotion</span>**<br>
 
 ### InputHandler
+***
+플레이어의 입력과 관련된 기능을 모아둔 스크립트이다.
 <details>
 <summary>InputHandler 스크립트</summary>
 <div markdown="1">       
@@ -112,6 +117,7 @@ public class InputHandler : MonoBehaviour
 
 
 #### inputAction 관련 부분
+***
 
 inputAction 관련해서 보면 다음과 같다.
 
@@ -137,7 +143,13 @@ public void OnEnable()
     // 인풋 액션 활성화
     inputActions.Enable();
 }
+
+private void OnDisable()
+{
+    inputActions.Disable();
+}
 ```
+
 <br>
 
 **<span style="color:skyblue">1.</span>** 객체가 활성화 될 때 inputActions이 비어있다면 새롭게 만든다.<br>
@@ -169,8 +181,161 @@ void playerMove(InputAction.CallbackContext inputActions)
 
 **<span style="color:skyblue">4.</span>** inputActions.Enable()으로 `inputActions을 활성화` 해준다.
 
+**<span style="color:skyblue">4.</span>** inputActions.Disabl()을 통해 게임 오브젝트가 비활성화되면 입력값을 받지 않도록 한다.
 
 #### 이동 관련 부분
+***
 inputAction을 통해 받은 입력 값을 토대로 이동 관련 로직이 구현된다.
+
 `중요한 것`은 **<span style="color:#44C9A1">InputHandler</span>** 스크립트는 기능을 구현만을 담당하며
 직접 이것들을 사용하는 것은 **<span style="color:#44C9A1">PlayerLocomotion</span>** 스크립트가 담당한다.
+
+```c#
+public float horizontal;
+public float vertical;
+public float moveAmount;
+public float mouseX;
+public float mouseY;
+
+
+
+public void TickInput(float delta)
+{
+    MoveInput(delta);
+}
+
+private void MoveInput(float delta)
+{
+    horizontal = movementInput.x;
+    vertical = movementInput.y;
+    moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
+    mouseX = cameraInput.x;
+    mouseY = cameraInput.y;
+}
+```
+
+어려운 부분은 딱히 없는 부분이다.
+
+**<span style="color:skyblue">1.</span>** MoveInput을 외부에서도 사용할 수 있도록 TickInput 함수로 묶는다.
+**<span style="color:skyblue">2.</span>** MoveInput이 실행되면 변수들에 값을 저장한다.  
+
+
+### AnimatorHandler
+***
+<details>
+<summary>AnimatorHandler 스크립트</summary>
+<div markdown="1">    
+
+애니메이션과 관련된 부분을 담당하는 스크립트이다
+```c#
+public class AnimatorHandler : MonoBehaviour
+{
+    public Animator anim;
+    int vertical;
+    int horizontal;
+    public bool canRotate;
+
+    public void Initialized()
+    {
+        anim = GetComponent<Animator>();
+        vertical = Animator.StringToHash("Vertical");
+        horizontal = Animator.StringToHash("Horizontal");
+    }
+
+    public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement)
+    {
+        #region vertical
+        float v = 0;
+
+        if (verticalMovement > 0 && verticalMovement < 0.55f)
+        {
+            v = 0.5f;
+        }
+        else if (verticalMovement > 0.55f)
+        {
+            v = 1;
+        }
+        else if (verticalMovement < 0 && verticalMovement > -0.55f)
+        {
+            v = -0.5f;
+        }
+        else if(verticalMovement < -0.55f)
+        {
+            v = -1;
+        }
+        else
+        {
+            v = 0;
+        }
+        #endregion
+        #region horizontal
+
+        float h = 0;
+
+        if (horizontalMovement > 0 && horizontalMovement < 0.55f)
+        {
+            h = 0.5f;
+        }
+        else if (horizontalMovement > 0.55f)
+        {
+            h = 1;
+        }
+        else if( horizontalMovement < 0 &&  horizontalMovement > -0.55f)
+        {
+            h = -0.5f;
+        }
+        else if ( horizontalMovement < -0.55f)
+        {
+            h = -1;
+        }
+        else
+        {
+            h = 0; 
+        }
+        #endregion
+
+        anim.SetFloat(vertical, v, 0.1f, Time.deltaTime);
+        anim.SetFloat(horizontal, h, 0.1f, Time.deltaTime);
+    }
+
+    public void CanRotate()
+    {
+        canRotate = true;
+    }
+    public void StopRotate()
+    {
+        canRotate = false;
+    }
+
+}
+```
+
+</div>
+</details> 
+
+#### 초기화 부분
+***
+이 스크립트는 플레이어의 자식인 모델에 붙어 있기 때문에
+초기화의 타이밍을 통일 시켜주기위해 초기화 함수를 만들고 실행을 **<span style="color:#44C9A1">PlayerLocomotion</span>** 에서 함께 초기화한다.
+
+초기화의 내용은 애니메이터 컴포넌트를 저장하고
+좀더 나은 성능을 위해서 애니메이터 파라미터들을 해쉬로 미리 저장해두는 작업을 한다.
+```c#
+public void Initialized()
+{
+    anim = GetComponent<Animator>();
+    vertical = Animator.StringToHash("Vertical");
+    horizontal = Animator.StringToHash("Horizontal");
+}
+```
+
+#### 애니메이션 업데이트 부분
+***
+코드가 세로로 긴 이유로 여기에 또 적진 않겠다.
+내용은 간단하게 매개변수로 받은 값에 따라 애니메이션을 업데이트 해준다.
+물론 이것도 기능만 구현되어 있고 실제 실행은  **<span style="color:#44C9A1">PlayerLocomotion</span>** 스크립트가 한다.
+
+
+#### 스크립트 외에 필요한 것
+애니메이터의 파라미터와 블렌드 트리가 설정되어 있어야 한다.
+![image](https://github.com/novicehog/comments/assets/131991619/c8fd1904-02ab-4c51-9a82-c0eac48425e4)
