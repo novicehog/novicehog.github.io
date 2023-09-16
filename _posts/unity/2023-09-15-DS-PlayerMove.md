@@ -339,3 +339,184 @@ public void Initialized()
 #### 스크립트 외에 필요한 것
 애니메이터의 파라미터와 블렌드 트리가 설정되어 있어야 한다.
 ![image](https://github.com/novicehog/comments/assets/131991619/c8fd1904-02ab-4c51-9a82-c0eac48425e4)
+
+
+### PlayerLocomotion
+***
+플레이어의 모든 행동을 담당한다.
+기능들을 직접 구현하기 보다는 다른 스크립트들을 
+이용해서 한 번에 사용하는 느낌이 있다.
+
+details>
+<summary>AnimatorHandler 스크립트</summary>
+<div markdown="1">    
+
+애니메이션과 관련된 부분을 담당하는 스크립트이다
+
+```c#
+
+public class PlayerLocomotion : MonoBehaviour
+{
+    Transform cameraObject;
+    InputHandler inputHandler;
+    Vector3 moveDirection;
+
+
+    [HideInInspector]
+    public Transform myTransform;
+    [HideInInspector]
+    public AnimatorHandler animatorHandler;
+
+    public new Rigidbody rigidbody;
+    public GameObject normalCamera;
+
+    [Header("Status")]
+    [SerializeField] float movementSpeed = 5;
+    [SerializeField] float rotationSpeed = 10;
+
+    void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+        inputHandler = GetComponent<InputHandler>();
+        animatorHandler = GetComponentInChildren<AnimatorHandler>();
+        cameraObject = Camera.main.transform;
+        myTransform = transform;
+        animatorHandler.Initialized();
+
+    }
+
+    #region Movement
+    Vector3 normalVector;
+    Vector3 targetPosition;
+
+    private void HandleRotation(float delta)
+    {
+        // 정면의 방향을 계산함
+        Vector3 targetDir = Vector3.zero;
+        float moveOverride = inputHandler.moveAmount;
+
+        targetDir = cameraObject.forward * inputHandler.vertical;
+        targetDir += cameraObject.right * inputHandler.horizontal;
+
+        targetDir.Normalize();
+        targetDir.y = 0;
+
+        if (targetDir == Vector3.zero)  // 움직이지 않을떄는 마지막으로 보던 곳을 보게 함
+            targetDir = myTransform.forward;
+
+
+
+        float rs = rotationSpeed;
+
+        Quaternion tr = Quaternion.LookRotation(targetDir);
+        Quaternion targetRotation = Quaternion.Slerp(myTransform.rotation, tr, rs * delta);
+
+        myTransform.rotation = targetRotation;
+    }
+    #endregion
+    public void Update()
+    {
+        float delta = Time.deltaTime;
+
+        inputHandler.TickInput(delta);
+
+        moveDirection = cameraObject.forward * inputHandler.vertical;
+        moveDirection += cameraObject.right * inputHandler.horizontal;
+        moveDirection.Normalize();
+
+        float speed = movementSpeed;
+        moveDirection *= speed;
+
+        Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, normalVector);
+        rigidbody.velocity = projectedVelocity;
+
+        animatorHandler.UpdateAnimatorValues(inputHandler.moveAmount, 0);
+
+        if (animatorHandler.canRotate)
+        {
+            HandleRotation(delta);
+        }
+    }
+}
+
+```
+
+</div>
+</details> 
+
+
+#### 회전 관련 함수
+***
+
+캐릭터의 바라보는 방향을 설정하는 부분
+이 부분은 간단하니 주석으로만 적어놓음.
+
+
+```c#
+
+private void HandleRotation(float delta)
+{
+    // 정면의 방향을 계산함
+    Vector3 targetDir = Vector3.zero;
+    float moveOverride = inputHandler.moveAmount;
+
+    targetDir = cameraObject.forward * inputHandler.vertical;
+    targetDir += cameraObject.right * inputHandler.horizontal;
+
+    targetDir.Normalize();
+    targetDir.y = 0;
+
+    if (targetDir == Vector3.zero)  // 움직이지 않을떄는 캐릭터의 현재 정면을 정면으로함
+        targetDir = myTransform.forward;
+
+
+
+    // 정면 방향을 향해 부드럽게 바라보게 함
+    float rs = rotationSpeed;
+
+    Quaternion tr = Quaternion.LookRotation(targetDir);
+    Quaternion targetRotation = Quaternion.Slerp(myTransform.rotation, tr, rs * delta);
+
+    myTransform.rotation = targetRotation;
+}
+
+```
+<br>
+#### 이동 관련 부분
+***
+
+위에서 봤던 회전 관련 함수와 매우 유사한 방식으로 처리됨.
+
+```c#
+public void Update()
+{
+    float delta = Time.deltaTime;
+
+    // InputHandler의 변수들의 값을 갱신해줌
+    inputHandler.TickInput(delta);
+
+    moveDirection = cameraObject.forward * inputHandler.vertical;
+    moveDirection += cameraObject.right * inputHandler.horizontal;
+    moveDirection.Normalize();
+
+    float speed = movementSpeed;
+    moveDirection *= speed;
+
+    // 현재 이동방향을 (1번째 인자)를 면의 노벌벡터(2번쨰 인자)를 통해 면을 알아내어 투영시킨 방향으로 설정함
+    // 즉 면을 따라 이동방향이 설정됨, 하지만 여기선 아직 normalVector가 설정되지 않아 의미없음
+    Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, normalVector);
+    rigidbody.velocity = projectedVelocity;
+
+    // 현재 이동 정도에 따라 애니메이션을 결정
+    animatorHandler.UpdateAnimatorValues(inputHandler.moveAmount, 0);
+
+    // 애니메이터 핸들러에 만들어둔 변수를 통해 
+    // 캐릭터 회전을 할지 말지를 정함
+    if (animatorHandler.canRotate)
+    {
+        HandleRotation(delta);
+    }
+}
+
+```
+
