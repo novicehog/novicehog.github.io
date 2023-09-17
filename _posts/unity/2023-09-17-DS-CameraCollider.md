@@ -111,6 +111,10 @@ private void HandleCameraCollisions(float delta)
 
 <br>
 
+**결과**
+
+![ezgif com-optimize](https://github.com/novicehog/comments/assets/131991619/38dbb346-8537-4cc3-9fde-069e4081ce0f)
+
 ## 배운점
 - Raucast외에는 따로 다른 것들이 존재하는지 몰랐으나 이번으로 <br>
  box, Sphere등의 다른 레이캐스트도 존재함을 알았다.
