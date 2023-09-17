@@ -360,7 +360,7 @@ rootmotion의 위치가 불안정 했기 때문에 문제가 발생했으나, <b
 ![image](https://github.com/novicehog/comments/assets/131991619/e6bd9e74-b2e4-45cd-9e69-ccaeb2a2dd67)
 
 
-## 배운점
+# 배운점
 - 애니메이션에 내장된 애니메이션을 통해 자연스럽게 움직이는 법을 알게되었다.
 - 애니메이션에 Behavior 을 추가하여 사용하는 법을 알았다.
 - InputSystem의 triggered를 통해 입력 여부를 받는 법을 알았다. 
