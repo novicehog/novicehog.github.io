@@ -90,12 +90,20 @@ public class PlayerManager : MonoBehaviour
 
 InputHandler의 입력 관련 값들을 여기서 갱신시켜준다.
 
+roFlag나 isInteracting의 변수들이 다른 곳에서 true가 되어 쓰이더라도
+그 다음 프레임에서 여기서 false로 갱신을 해준다.
+
 
 ## 애니메이터에 애니메이션 추가
 
 애니메이션과 파라미터 추가.
 구르기의 경우 애니메이션 전환을 스크립트에서 설정해주기 때문에
 따로 Conditions에 조건을 추가해주지 않음.
+
+여기서 추가되는 isInteracting 파라미터는
+구르기나 백스텝같은 애니메이션 고유의 움직임을 따라하야하는 애니메이션이 실행될 때 
+true가 되는 변수다.
+
 
 ![image](https://github.com/novicehog/comments/assets/131991619/52affa5c-4e06-4cb7-a74c-73278526006c)
 
@@ -106,9 +114,11 @@ InputHandler의 입력 관련 값들을 여기서 갱신시켜준다.
 ### AnimatorHandler 추가 내용
 ***
 <details>
-<summary>VR</summary>
+<summary>AnimatorHandler</summary>
+<div markdown="1"> 
 
 ```c#
+
 public class AnimatorHandler : MonoBehaviour
 {
     public Animator anim;
@@ -160,8 +170,8 @@ public class AnimatorHandler : MonoBehaviour
     }
 }
 
-```
-<div markdown="1">       
+
+```     
 </div>
 </details> 
 
@@ -170,36 +180,114 @@ public class AnimatorHandler : MonoBehaviour
 이 부분은 외부 스크립트에서 애니메이션을 실행할 수 있도록 해주는 부분이다.
 
 
+
 ***
 ```c#
 public void PlayTargetAnimation(string targetAnim, bool isInteracting)
 {
-    anim.applyRootMotion = isInteracting;           // 애니메이션 움직임을 따를지 여부
-    anim.SetBool("isInteracting", isInteracting);   // 파라미터 온
-    anim.CrossFade(targetAnim, 0.1f, 0) ;           //
+    anim.applyRootMotion = isInteracting;           
+    // isInteracting 파라미터 설정
+    anim.SetBool("isInteracting", isInteracting);   
+    // 애니메이션을 Fade In, Out 효과를 주며 부드럽게 실행
+    anim.CrossFade(targetAnim, 0.1f, 0) ;           
 }
 ```
 <br>
 
 
-### OnAnimatorMove 유니티 이벤트
+#### OnAnimatorMove 유니티 이벤트
 ***
 
 구르기에 경우 애니메이션 자체에 내장된 움직임을 이용하여야 자연스럽기 때문에
-유니티에서 제공하는 OnAnimatorMove에 움직임을 구현한다.
+유니티에서 제공하는 `OnAnimatorMove`에 움직임을 구현한다.
 
-이 이벤트의 경우 애니메이션이 rootmotion이 다음과 같이 바뀐다
+OnAnimatorMove는 애니메이션의 rootPosition이 움직일 때 계속 호출된돠.
+밑의 사진이 루트 포지션
+
+![image](https://github.com/novicehog/comments/assets/131991619/f5982b30-0bb3-4da8-bb55-6e9b88bb045b)
+
+<br>
+
+
+이 이벤트의 경우 애니메이터의 rootmotion이 다음과 같이 `Handled by Script`로 바뀐다.
+
 ![image](https://github.com/novicehog/comments/assets/131991619/b0f79c43-3346-4aec-b2da-14e7b960487e)
 
-<details>
-<summary>VR</summary>
+<br>
+
 ```c#
+private void OnAnimatorMove()
+{
+    if (inputHandler.isInteracting == false)
+        return;
+
+    float delta = Time.deltaTime;
+    playerLocomotion.rigidbody.drag = 0;            // 마찰력 제거
+    Vector3 deltaPosition = anim.deltaPosition;     // 거리 가져옴
+    deltaPosition.y = 0;                            // y축 이동 제거
+    Vector3 velocity = deltaPosition / delta;       // 거리 가져옴
+    playerLocomotion.rigidbody.velocity = velocity; // 속도 적용
+}
 ```
-<div markdown="1">       
-</div>
-</details> 
+
+구현된 코드의 원리는 다음과 같다.
+1. 애니메이션 자체에 내장된 움직임을 가져온다.  (anim.deltaPosition로 가져옴)
+2. 속력을 구하기 위해 거리를 시간으로 나눠준다.    (거리 / 시간 = 속도)
+3. y축 속력 제거
+4. 속력 적용
+<br>
 
 
+
+### InputHandler에 추가된 부분
+
+다음 내용이 추가됐다.
+
+```c#
+
+public bool rollFlag;
+public bool isInteracting;
+
+private void HandleRollInput(float delta)
+{
+    //b_Input = inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Started;
+    b_Input = inputActions.PlayerActions.Roll.triggered;
+
+    if (b_Input)
+    {
+        rollFlag = true;
+    }
+}
+```
+
+
+### PlayerLocomotion에 추가된 부분
+
+```c#
+public void HandleRollingAndSprinting(float delta)
+{
+    if (animatorHandler.anim.GetBool("isInteracting"))
+        return;
+
+    if (inputHandler.rollFlag)
+    {
+        moveDirection = cameraObject.forward * inputHandler.vertical;
+        moveDirection += cameraObject.right * inputHandler.horizontal;
+
+        if (inputHandler.moveAmount > 0)
+        {
+            animatorHandler.PlayTargetAnimation("Rolling", true);
+            moveDirection.y = 0;
+            Quaternion rollRotation = Quaternion.LookRotation(moveDirection);
+            myTransform.rotation = rollRotation;
+        }
+        else
+        {
+            animatorHandler.PlayTargetAnimation("Backstep", true);
+        }
+    }
+}
+```
 
 
 
@@ -207,12 +295,7 @@ public void PlayTargetAnimation(string targetAnim, bool isInteracting)
 ## 애니메이션에 ResetIsInteracting 스크립트를 Behavior로 추가
 
 
-###
-<details>
-<summary>VR</summary>
-<div markdown="1">       
-</div>
-</details> 
+
 
 
 ###
