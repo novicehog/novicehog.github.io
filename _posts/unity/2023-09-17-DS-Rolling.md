@@ -52,7 +52,7 @@ last_modified_at: 2023-09-17
 3. 애니메이터에 애니메이션 추가
 4. 여러 스크립트들에 내용 추가
 5. 애니메이션에 ResetIsInteracting 스크립트를 Behavior로 추가
-6. 버전 업 되면서 영상의 방법으로 되지 않는 버그 수정
+6. 영상의 방법으로 되지 않는 버그 수정
 
 ##  PlayerControls(InputSystem) 에 새로운 입력 할당
 
@@ -218,6 +218,7 @@ OnAnimatorMove는 애니메이션의 rootPosition이 움직일 때 계속 호출
 ```c#
 private void OnAnimatorMove()
 {
+    // 
     if (inputHandler.isInteracting == false)
         return;
 
@@ -231,6 +232,7 @@ private void OnAnimatorMove()
 ```
 
 구현된 코드의 원리는 다음과 같다.
+0. isInteracting 중이 아닐 경우 실행하지않음 `(isInteracting은 rootMotion을 통해 움직이겠다는 변수)`
 1. 애니메이션 자체에 내장된 움직임을 가져온다.  (anim.deltaPosition로 가져옴)
 2. 속력을 구하기 위해 거리를 시간으로 나눠준다.    (거리 / 시간 = 속도)
 3. y축 속력 제거
@@ -262,10 +264,23 @@ private void HandleRollInput(float delta)
 
 
 ### PlayerLocomotion에 추가된 부분
+***
+
+AnimatorHandler 스크립트에 추가된 함수를 조건을 판별하여
+실행시킨다.
+
 
 ```c#
+public void Update()
+{
+    ...
+
+    HandleRollingAndSprinting(delta);
+}
+
 public void HandleRollingAndSprinting(float delta)
 {
+    // 한 번 실행하고 애니메이션이 끝날 때 까지 다시 실행 불가능
     if (animatorHandler.anim.GetBool("isInteracting"))
         return;
 
@@ -289,26 +304,60 @@ public void HandleRollingAndSprinting(float delta)
 }
 ```
 
+<br>
 
 
 
 ## 애니메이션에 ResetIsInteracting 스크립트를 Behavior로 추가
 
+애니메이션 Behavior에 다음과 같은 스크립트를 추가하여, <br>
+애니메이션 종료시 자동으로 isInteracting 파라미터가 false가 되도록 한다.
+
+이 스크립트를 추가함으로써 따로 isInteracting 
+
+```c#
+public class ResetIsInteracting : StateMachineBehaviour
+{
+    //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.SetBool("isInteracting", false);
+    }
+}
+
+```
+
+<br>
 
 
 
 
-###
-<details>
-<summary>VR</summary>
-<div markdown="1">       
-</div>
-</details> 
+## 영상의 방법으로 되지 않는 버그 수정
+
+### InputSystem의 started
+***
+
+구르기의 입력버튼을 감지하는 부분이 영상대로 하면 제대로 되지 않음. <br>
+버전 업의 이유로 되지 않는다 하며 다음과 같이 바꾸면 해결.
+
+```c#
+    //b_Input = inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Started;
+    b_Input = inputActions.PlayerActions.Roll.triggered; // 이렇게 해야함
+```
 
 
-###
-<details>
-<summary>VR</summary>
-<div markdown="1">       
-</div>
-</details> 
+### 구르기 애니메이션 오작동
+***
+나의 경우 mixamo에서 애니메이션을 가져왔는데 구르기가 오작동하는 문제가 있었다.
+
+rootmotion의 위치가 불안정 했기 때문에 문제가 발생했으나, <br>
+
+이것은 애니메이션을 다음과 같이 설정해주고 apply 해주니 되었다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/e6bd9e74-b2e4-45cd-9e69-ccaeb2a2dd67)
+
+
+## 배운점
+- 애니메이션에 내장된 애니메이션을 통해 자연스럽게 움직이는 법을 알게되었다.
+- 애니메이션에 Behavior 을 추가하여 사용하는 법을 알았다.
+- InputSystem의 triggered를 통해 입력 여부를 받는 법을 알았다. 
