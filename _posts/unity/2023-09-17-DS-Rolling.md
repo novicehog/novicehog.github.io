@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "유니티 다크소울 따라만들기 ch_4 rolling 구르기"
+title:  "유니티 다크소울 따라만들기 ch_4 rolling 구르기와 백스텝"
 categories: 
     - Unity
 tag: [Unity, DarkSouls]
@@ -268,6 +268,9 @@ private void HandleRollInput(float delta)
 
 AnimatorHandler 스크립트에 추가된 함수를 조건을 판별하여
 실행시킨다.
+
+움직이고 있을 때 키가 눌리면 구르기를, <br>
+가만히 있을 때 누르면 백스텝이 재생된다.
 
 
 ```c#
