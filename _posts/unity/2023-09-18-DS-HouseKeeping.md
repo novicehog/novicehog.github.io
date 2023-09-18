@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "유니티 다크소울 따라만들기 ch_5 Sprint 달리기"
+title:  "유니티 다크소울 따라만들기 ch_6 코드 정리"
 categories: 
     - Unity
 tag: [Unity, DarkSouls]
