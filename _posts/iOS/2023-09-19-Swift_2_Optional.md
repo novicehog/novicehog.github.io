@@ -181,7 +181,8 @@ y = x!
 UnWrapping은 옵셔널 타입 안에 감싸진 값을 벗겨내어 사용하는 것인데, <br>
 아무런 값이 없는 nil일 경우 UnWrapping하게되면 앱이 다운되어버린다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/ad9efcd0-77a4-453b-b573-6b1f9f88a28c/Untitled.png)
+![언래](https://github.com/novicehog/comments/assets/131991619/2dc941f9-2a6b-45d2-8a3f-bb978c9cba53)
+
 
 ```swift
 var x : Int?
@@ -199,7 +200,7 @@ else {print("nil")}
 
  optional binding 사용하는 방법도 있다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/ab589344-3a05-4c7a-ada3-134a6a052f4f/Untitled.png)
+![강제언래](https://github.com/novicehog/comments/assets/131991619/3a0d4443-79cc-4de2-81ec-881dc1174cdd)
 
 optional binding에는 세 가지 형태가 있다.
 
@@ -218,13 +219,15 @@ if let 옵셔널_변수{}
 if let X{}
 ```
 
-여러가지 옵셔널_변수를 동시에 언래핑 할 수 있다.
+
+**여러가지 옵셔널_변수를 동시에 언래핑 할 수 있다.**
 
 !통해 옵셔널 변수를 선언할 수도 있다.
 
 이 경우 자동으로 컴파일러가 자동으로 판단하여 언래핑을 한다.
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/f61ad134-85df-4015-92d4-d1303a3748b5/Untitled.png)
+![I](https://github.com/novicehog/comments/assets/131991619/0488d04d-2435-4a85-800f-884cc77a4ee1)
+
 
 https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/
 
@@ -270,49 +273,3 @@ myColor = userDefinedColor ?? defaultColor
 //nil이 아니므로 언래핑된 red가 할당됨
 print(myColor) //red, 주의 optional(red)가 아님
 ```
-
-**Swift에서 옵셔널 값을 사용하려면 먼저 옵셔널을 해제(unwrapping)해야 합니다. 다음은 Swift에서 옵셔널을 해제하는 주요 방법들입니다:**
-
-**강제 언래핑 (Forced Unwrapping): 옵셔널 값 뒤에 느낌표(!)를 붙여 값을 강제로 추출합니다. 하지만 이 방법은 해당 값이 nil인 경우 런타임 에러를 발생시키므로, 실제 값이 반드시 존재함을 확신할 때만 사용해야 합니다.**
-
-```swift
-let optionalInt: Int? = 5
-let forcedUnwrappedInt: Int = optionalInt!// 5
-```
-
-**옵셔널 바인딩 (Optional Binding): `if let` 구문이나 `guard let` 구문을 사용하여 안전하게 옵셔널 값을 추출합니다. 이 방법은 nil인 경우 안전하게 처리할 수 있습니다.**
-
-```swift
-let optionalString: String? = "Hello, world"
-
-if let unwrappedString = optionalString {
-    print(unwrappedString)// "Hello, world"
-} else {
-    print("The value is nil.")
-}
-
-guard let unwrappedString = optionalString else {
-    return// 혹은 다른 처리
-}
-print(unwrappedString)// "Hello, world"
-```
-
-**Nil 병합 연산자 (Nil-Coalescing Operator): `??` 연산자를 사용하여 옵셔널 값이 nil일 경우 기본값을 제공할 수 있습니다.**
-
-```swift
-let optionalDouble: Double? = nil
-let doubleWithDefaultValue = optionalDouble ?? 0.0// 0.0
-```
-
-**옵셔널 체이닝 (Optional Chaining) : `?.` 연산자를 통해 옵셔널의 내부 속성에 접근하거나 메소드를 호출하는데, 만약 그 과정에서 어떤 단계가든 nil값을 만나면 즉시 멈추고 전체 결과값으로 nil을 반환합니다.**
-
-```swift
-class MyClass {
-    var myProperty: String?
-}
-
-let myInstance: MyClass? = MyClass()
-myInstance?.myProperty?.count// 결과는 Optional(Optional(nil))입니다.
-```
-
-**위의 네 가지 방법인 강제 언래핑, 옵셔널 바인딩, Nil 병합 연산자 그리고 옵셔널 체이닝은 Swift에서 가장 많이 사용되는 방법들입니다. 이 중 어떤 방법을 사용할지는 상황과 개발자의 판단에 따라 달라집니다.**
