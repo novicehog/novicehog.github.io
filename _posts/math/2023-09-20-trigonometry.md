@@ -30,8 +30,8 @@ $\pi$
 ## 라디안
 
 $$
- \pi = 180 \degree
- \tau = 360 \degree
+ \pi = 180 ^{\circ}
+ \tau = 360 ^{\circ}
 $$
 
 
