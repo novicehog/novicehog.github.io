@@ -189,6 +189,8 @@ public class WeaponHolderSlot : MonoBehaviour
 
 ## WeaponSlotManager 스크립트
 
+양손의 WeaponHolderSlot을 관리하는 WeaponSlotManager스크립트 생성
+
 ```c#
 public class WeaponSlotManager : MonoBehaviour
 {
@@ -228,3 +230,38 @@ public class WeaponSlotManager : MonoBehaviour
 }
 ```
 <br>
+
+플레이어의 모델에 스크립트를 넣어줌
+
+![image](https://github.com/novicehog/comments/assets/131991619/1d41464b-9d3f-42e0-abeb-cb6d36df5d07)
+<br>
+
+## PlayerInventory 스크립트
+
+아직은 간단히 WeaponSlotManager를 통해 무기를 장착하는 부분만 구현
+
+```c#
+public class PlayerInventory : MonoBehaviour
+{
+    WeaponSlotManager weaponSlotManager;
+
+    public WeaponItem rightWeapon;
+    public WeaponItem leftWeapon;
+
+    private void Awake()
+    {
+        weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
+    }
+
+    private void Start()
+    {
+        weaponSlotManager.LoadWeaponOnSlot(rightWeapon, false);
+        weaponSlotManager.LoadWeaponOnSlot(leftWeapon, true);
+    }
+}
+```
+<br>
+
+Player에 스크립트를 넣어주고 만들어둔 Sword 객체를 넣어준다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/41125234-4c60-4713-8ad1-37e4a2ac5eab)
