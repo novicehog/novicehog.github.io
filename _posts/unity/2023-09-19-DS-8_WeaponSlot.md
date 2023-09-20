@@ -182,6 +182,7 @@ public class WeaponHolderSlot : MonoBehaviour
 오른손 
 
 ![image](https://github.com/novicehog/comments/assets/131991619/04991b4f-74fa-4e82-9291-c0c453cf20d8)
+
 <br>
 
 
@@ -229,11 +230,13 @@ public class WeaponSlotManager : MonoBehaviour
     }
 }
 ```
+
 <br>
 
 플레이어의 모델에 스크립트를 넣어줌
 
 ![image](https://github.com/novicehog/comments/assets/131991619/1d41464b-9d3f-42e0-abeb-cb6d36df5d07)
+
 <br>
 
 ## PlayerInventory 스크립트
@@ -265,3 +268,26 @@ public class PlayerInventory : MonoBehaviour
 Player에 스크립트를 넣어주고 만들어둔 Sword 객체를 넣어준다.
 
 ![image](https://github.com/novicehog/comments/assets/131991619/41125234-4c60-4713-8ad1-37e4a2ac5eab)
+
+
+## 무기 위치 조정
+게임을 실행시키고 무기의 각도와 위치를 조정한다. <br>
+이때 먼저 오른손의 무기를 Prefab자체의 Weapon Pivot을 통해 조절한다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/010ff4a1-343f-4062-8f18-9d4e80a463e3)
+
+<br>
+
+이렇게 조정된 값을 복사하여 prefab에 붙여넣고
+왼손의 삐뚤어진 부분은 왼손밑의 Hand Override를 통해 수정한다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/601f2e40-bfe4-4ade-8bb4-d85d7da0975c)
+
+<br>
+
+
+
+# 결과
+
+![결과](https://github.com/novicehog/comments/assets/131991619/fab97194-b3cf-48c8-ab47-bf67755286c6)
+
