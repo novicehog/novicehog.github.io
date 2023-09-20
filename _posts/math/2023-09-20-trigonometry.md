@@ -25,13 +25,15 @@ last_modified_at: 2023-09-20
 
 ## radian 라디안
 
-파이$\pi$나 타우를 이용해서 나타냄
+파이 `$\pi$` 나 타우를 이용해서 나타냄
+$\pi$
 ## 라디안
 
 $$
- \pi =  180 \degree
- \tau =  360 \degree
+ \pi = 180 \degree
+ \tau = 360 \degree
 $$
+
 
 원은 2파이 또는 1타우
 

@@ -11,6 +11,8 @@
 # Review documentation to determine if you should use `theme` or `remote_theme`
 # https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/#installing-the-theme
 
+
+
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
 minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
@@ -210,6 +212,8 @@ kramdown:
   smart_quotes: lsquo,rsquo,ldquo,rdquo
   enable_coderay: false
 
+mathjax: true
+
 
 # Sass/SCSS
 sass:
@@ -300,3 +304,6 @@ defaults:
       toc_label: 
       toc_icon: "fa-solid fa-list" #https://fontawesome.com/v5/search?o=r&m=free&s=solid 아이콘 링크
       typora-root-url: ../
+
+
+
