@@ -183,3 +183,48 @@ public class WeaponHolderSlot : MonoBehaviour
 
 ![image](https://github.com/novicehog/comments/assets/131991619/04991b4f-74fa-4e82-9291-c0c453cf20d8)
 <br>
+
+
+# Player 세팅
+
+## WeaponSlotManager 스크립트
+
+```c#
+public class WeaponSlotManager : MonoBehaviour
+{
+    
+    WeaponHolderSlot leftHandSlot;      
+    WeaponHolderSlot rightHandSlot;
+
+    private void Awake()
+    {
+        // 양손의 WeaponHolderSlot을 가져옴
+        WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
+        foreach  (WeaponHolderSlot weaponSlot in weaponHolderSlots)
+        {
+            if(weaponSlot.isLeftHandSlot)
+            {
+                leftHandSlot = weaponSlot;
+            }
+            else if (weaponSlot.isRightHandSlot)
+            {
+                rightHandSlot = weaponSlot;
+            }
+        }
+    }
+
+    // WeaponHolderSlot를 이용하여 무기를 장착하는 함수 구현
+    public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft)
+    {
+        if(isLeft)
+        {
+            leftHandSlot.LoadWeaponModel(weaponItem);
+        }
+        else
+        {
+            rightHandSlot.LoadWeaponModel(weaponItem);
+        }
+    }
+}
+```
+<br>
