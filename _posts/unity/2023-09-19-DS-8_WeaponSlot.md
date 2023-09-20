@@ -45,11 +45,11 @@ last_modified_at: 2023-09-20
 ## 구현 내용
 대략적인 구현 내용은 다음과 같다.
 
-1. Item 클래스와 그것을 상속받는 WeaponItem 클래스를 만든다
-2. 양 손에 무기를 생성하여 자식으로 넣거나 장착 중인 무기를 파괴하여 안보이게하는<br>
-   기능이 구현된 WeaponHolderSlot 스크립트를 만들어 넣는다.
-3. 양 손에 장착된 WeaponHolderSlot스크립트를 관리하는 WeaponSlotManager 스크립트를 만든다.
-4. PlyaerInventory 스크립트를 하나 더 만들어 WeaponSlotManager 스크립트와 상호작용한다.
+1. `Item` 클래스와 그것을 상속받는 `WeaponItem` 클래스를 만든다
+2. `양 손에 무기를 생성`하여 자식으로 넣거나 `장착 중인 무기를 파괴`하여 안보이게하는<br>
+   기능이 구현된 `WeaponHolderSlot` 스크립트를 만들어 넣는다.
+3. 양 손에 장착된 `WeaponHolderSlot스크립트를 관리`하는 `WeaponSlotManager` 스크립트를 만든다.
+4. `PlyaerInventory` 스크립트를 하나 더 만들어 `WeaponSlotManager 스크립트와 상호작용`한다.
 
 
 # item 세팅
@@ -71,7 +71,7 @@ public class Item : ScriptableObject
 
 ## WeaponItem 스크립트
 Item 스크립트를 상속받으며 유니티 메뉴창에서 생성할 수 있도록 <br>
-[CreateAssetMenu] 속성을 달아준다.
+`[CreateAssetMenu] 속성`을 달아준다.
 
 ```c#
 [CreateAssetMenu(menuName = "Items/Weapon Item")]
@@ -81,3 +81,22 @@ public class WeaponItem : Item
     public bool isUnarmed;
 }
 ```
+
+createAssetMenu를 통해 WeaponItem은 메뉴에서 `생성이 가능`하게 되었다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/569c0fc0-a95c-4e90-8107-fe34088cccbc)
+
+<br>
+
+스크립터블 오브젝으를 통해 객체를 생성하기 전에 sword_01의 프리팹을 만들어준다. <br>
+sword_01 프리팹은 빈 오브젝트 Sword_01이 최상위 부모로 <br>
+그 밑으로 무기의 `위치와 크기를 잡아줄 Weapon Pivot` 빈 오브젝트와<br>
+`모델을 담당할 Sword_01`을 자식으로 가진다.
+
+이때 Weapon Pivot의 크기는 100 100 100으로 해준다.<br>
+플레이어 캐릭터 모델의 자식으로 들어가게되면 크기가 0.01배 되어있어<br>
+무기 또한 0.01배가 되버리기 떄문<br>
+
+![image](https://github.com/novicehog/comments/assets/131991619/259d7198-1631-4878-9051-32149a73458c)
+
+
