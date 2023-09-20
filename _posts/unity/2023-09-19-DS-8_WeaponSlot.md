@@ -57,13 +57,15 @@ last_modified_at: 2023-09-20
 ## Item 스크립트
 모든 아이템 클래스의 부모가 될 Item 스크립트를 만들어준다.
 
+Item 를 상속받는 모든 클래스는 공통으로 아이콘과 이름을 가질 것이다.
+
 아이템 스크립트의 경우 유니티에서 제공하는 스크립터블 오브젝트를 상속받게 한다.
 ```c#
 public class Item : ScriptableObject
 {
     [Header("Item Information")]
-    public Sprite itemIcon;
-    public string itemName;
+    public Sprite itemIcon;         // 아이템 아이콘
+    public string itemName;         // 아이템 이름
 }
 ```
 
@@ -77,8 +79,8 @@ Item 스크립트를 상속받으며 유니티 메뉴창에서 생성할 수 있
 [CreateAssetMenu(menuName = "Items/Weapon Item")]
 public class WeaponItem : Item
 {
-    public GameObject modelPrefab;
-    public bool isUnarmed;
+    public GameObject modelPrefab;      // 무기 프리팹
+    public bool isUnarmed;              // 비무장 무기를 사용할때 체크(현재는 미사용)
 }
 ```
 
@@ -100,3 +102,84 @@ sword_01 프리팹은 빈 오브젝트 Sword_01이 최상위 부모로 <br>
 ![image](https://github.com/novicehog/comments/assets/131991619/259d7198-1631-4878-9051-32149a73458c)
 
 
+
+WeaponItem 객체 Sword 생성
+
+아이콘은 아직 없으므로 이름과 방금 만든 Sword_01 프리팹을 넣어줌
+
+![image](https://github.com/novicehog/comments/assets/131991619/da9063f0-4d95-4c8e-a883-8b06b873fd50)
+<br>
+
+# WeaponHolderSlot
+플레이어의 양손에 달아줄 스크립트인 WeaponHolderSlot 스크립트를 만든다.
+
+```c#
+public class WeaponHolderSlot : MonoBehaviour
+{
+    public Transform parentOverride;        // 왼손의 경우 바로 손의 자식으로 넣지않고 빈 객체 밑으로 넣는다.
+    public bool isLeftHandSlot;             // 어느쪽 손인지 (왼손인지 오른손인지)
+    public bool isRightHandSlot;            // 구분할 변수
+
+    public GameObject currentWeaponModel;   // 현재 장착 중인 무기
+
+    // 무기 해제 (비활성화 해서 해제)
+    public void UnloadWeapon()
+    {
+        if(currentWeaponModel != null)
+        {
+            currentWeaponModel.SetActive(false);
+        }
+    }
+
+    // 무기 해제 (무기를 파괴해서 해제)
+    public void UnloadWeaponAndDestroy()
+    {
+        if(currentWeaponModel != null) 
+        {
+            Destroy(currentWeaponModel);
+        }
+    }
+
+    // 무기를 파괴하여 해제하고 새로운 무기 장착
+    public void LoadWeaponModel(WeaponItem weaponItem)
+    {
+        UnloadWeaponAndDestroy();
+
+        if(weaponItem == null)
+        {
+            UnloadWeapon();
+            return;
+        }
+
+        GameObject model = Instantiate(weaponItem.modelPrefab) as GameObject;
+        if(model != null)
+        {
+            if(parentOverride != null)
+            {
+                model.transform.parent = parentOverride;
+            }
+            else
+            {
+                model.transform.parent = transform;
+            }
+
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+            model.transform.localScale = Vector3.one;
+        }
+        currentWeaponModel = model;
+    }
+}
+```
+
+왼손과 오른손에 스크립트들 달아줌.
+
+왼손
+
+![image](https://github.com/novicehog/comments/assets/131991619/921f9099-88a5-44d0-a45e-9082af1950f3)
+<br>
+
+오른손 
+
+![image](https://github.com/novicehog/comments/assets/131991619/04991b4f-74fa-4e82-9291-c0c453cf20d8)
+<br>
