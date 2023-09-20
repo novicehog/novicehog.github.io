@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "삼각 함수 관련"
+title:  "삼각 함수"
 categories: 
     - math
 tag: [math]
@@ -17,15 +17,15 @@ last_modified_at: 2023-09-20
 
 # 각도
 
-## 디그리
+## Degree
 
- 일반적인 각도
+일반적인 각도
 
 원은 360도
 
-## 라디안
+## radian 라디안
 
-파이나 타우를 이용해서 나타냄
+파이$$ \pi =  360$$ 나 타우를 이용해서 나타냄
 
 원은 2파이 또는 1타우
 
