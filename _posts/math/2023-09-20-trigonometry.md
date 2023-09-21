@@ -55,3 +55,6 @@ $ 60^{\circ} = 60 *  \tau/360 = \pi/6$
 
   
 ## 올싸탄코
+각 사분면마다 삼각비의 +-는 다음과 같다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/9c55e282-03f5-47ff-82ab-aa7c4c16871d)
