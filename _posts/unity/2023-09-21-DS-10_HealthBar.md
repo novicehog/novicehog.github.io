@@ -137,3 +137,21 @@ public class PlayerDamage : MonoBehaviour
 
 이 스크립트를 아무 오브젝트에 넣고 isTrigger를 활성화해준다.
 
+![image](https://github.com/novicehog/comments/assets/131991619/ce45ae3f-e74d-4e11-bf0b-fe01aee2b08a)
+
+
+## 애니메이션 추가
+
+피격 애니메이션과 사망 애니메이션을 추가해준다.
+사망의 경우는 Empty로 연결해주지 않는다. 
+
+![image](https://github.com/novicehog/comments/assets/131991619/6f08c1fd-7ba0-4049-8817-239b08f77799)
+
+
+# 결과
+
+![ezgif com-optimize](https://github.com/novicehog/comments/assets/131991619/e7533c0a-30dc-4dfe-98e3-7bc3b6f56382)
+
+
+# 배운점
+- slider의 value를 적절하게 조정하는 방법을 알 수 있었다.
