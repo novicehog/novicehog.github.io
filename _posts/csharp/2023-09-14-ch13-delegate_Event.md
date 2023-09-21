@@ -80,4 +80,156 @@ int MyMethod(int a) // 메소드
 
 
 ## delegate는 왜, 언제 사용하나?
-함수를 사용할 때 매개변수로 `값`을 넘기는 것 아니라 `코드`
+함수를 사용할 때 매개변수로 `값`을 넘기는 것 아니라 `함수` 자체를 넘길 수 있다. <br>
+
+다음 코드의 경우 오름차순 비교 함수와 내림차순 비교 함수 두가지가 있다. <br>
+이 둘과 같은 인자값을 갖는 delegate를 인자값으로 갖는 BubbleSort함수에 <br>
+어떤 함수를 넣어주냐에 따라 다른 결과가 나온다. <br>
+
+```c#
+delegate int Compare(int a, int b);
+internal class Program
+{
+
+    static int AscendCompare(int a, int b)
+    {
+        if (a > b)
+        {
+            return 1;
+        }
+        else if (a == b)
+            return 0;
+        else
+            return -1;
+    }
+
+    static int DescendCompare(int a, int b)
+    {
+        if (a < b)
+            return 1;
+        else if (a == b)
+            return 0;
+        else return -1;
+    }
+
+    static void BubbleSort(int[] DataSet, Compare Comparer)
+    {
+        int i = 0;
+        int j = 0;
+        int temp = 0;
+
+        for (i = 0; i < DataSet.Length -1; i++)
+        {
+            for (j = 0; j < DataSet.Length - (i + 1); j++)
+            {
+                if (Comparer(DataSet[j] , DataSet[j+1]) > 0)
+                {
+                    temp = DataSet[j + 1];
+                    DataSet[j+1] = DataSet[j];
+                    DataSet[j] = temp;
+                }
+            }
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        int[] array = { 3, 7, 4, 2, 10 };
+
+        Console.WriteLine("Sorting ascending..");
+        BubbleSort(array, new Compare(AscendCompare));
+
+        for (int i = 0; i < array.Length; i++)
+            Console.Write($"{array[i]} ");
+
+        int[] array2 = { 7, 2, 8, 10, 11 };
+        Console.WriteLine("\nSorting descending...");
+        BubbleSort(array2, new Compare(DescendCompare));
+
+        for (int i = 0; i < array2.Length; i++)
+            Console.Write($"{array2[i]} ");
+
+        Console.WriteLine();
+    }
+}
+
+```
+
+<br>
+
+## 일반화 대리자
+대리자는 일반화(generic)형식의 메소드도 참조할 수 있다.
+
+```c#
+delegate int Compare<T>(T a, T b); 
+```
+
+<br>
+
+위에서 예시로든 코드를 일반화 대리자로 바꾸면 다음과 같다.
+
+이때 여기서 보이는 CompareTo는  <br>
+모든 수치 형식과 string이 IComparable을 상속해서 구현하고있는 메소드로써 <br>
+자신보다 큰 값이 인자로 들어오면 -1 , 같으면 0, 작으면 1을 반환한다. <br>
+
+```c#
+delegate int Compare<T>(T a, T b);
+internal class Program
+{
+
+    static int AscendCompare<T>(T a, T b) where T : IComparable<T>
+    {
+        return a.CompareTo(b);
+    }
+
+    static int DescendCompare<T>(T a, T b) where T : IComparable<T>
+    {
+        return a.CompareTo(b) * -1;
+    }
+
+    static void BubbleSort<T>(T[] DataSet, Compare<T> Comparer)
+    {
+        int i = 0;
+        int j = 0;
+        T temp;
+
+        for (i = 0; i < DataSet.Length -1; i++)
+        {
+            for (j = 0; j < DataSet.Length - (i + 1); j++)
+            {
+                if (Comparer(DataSet[j] , DataSet[j+1]) > 0)
+                {
+                    temp = DataSet[j + 1];
+                    DataSet[j+1] = DataSet[j];
+                    DataSet[j] = temp;
+                }
+            }
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        int[] array = { 3, 7, 4, 2, 10 };
+
+        Console.WriteLine("Sorting ascending..");
+        BubbleSort(array, new Compare<int>(AscendCompare));
+
+        for (int i = 0; i < array.Length; i++)
+            Console.Write($"{array[i]} ");
+
+        string[] array2 = { "abc", "def", "ghi", "jkl", "mno" };
+        Console.WriteLine("\nSorting descending...");
+        BubbleSort(array2, new Compare<string>(DescendCompare));
+
+        for (int i = 0; i < array2.Length; i++)
+            Console.Write($"{array2[i]} ");
+
+        Console.WriteLine();
+    }
+}
+```
+
+<br>
+
+
+## 대리자 체인
