@@ -15,10 +15,13 @@ last_modified_at: 2023-09-22
 
 ---
 
+
 # 구현 원리
 TriggerEnter를 통해 데미지를 구현한다. <br>
 이때 애니메이션 이벤트를 이용하여 콜라이더를 자연스럽게
 켰다 끈다.
+
+<br>
 
 # 기초 작업
 
@@ -82,6 +85,8 @@ public class EnemyStats : MonoBehaviour
 ***
 만든 스크립트와 콜라이더 리지드바디를 넣어준다.
 
+태그도 Enemy로 바꿔준다.
+
 ![image](https://github.com/novicehog/comments/assets/131991619/733a0cec-7e23-441d-8be3-1ad6495d18e7)
 
 <br>
@@ -108,10 +113,148 @@ public class EnemyStats : MonoBehaviour
 ***
 데미지를 가하는 스크립트인 `DamageCollider`스크립트를 생성한다.
 
+콜라이더를 끄거나 키는 기능이 있고, <br>
+충돌한 대상의 `태그를 감지`해서 데미지를 가할 수 있다.
 
-DamageCollider 스크립트 추가
+```c#
+public class DamageCollider : MonoBehaviour
+{
+    Collider damageCollider;
 
-WeaponSlotManager 스크립트 수정
+    public int currentWeaponDamage = 25;
+
+    private void Awake()
+    {
+        damageCollider = GetComponent<Collider>();
+        damageCollider.gameObject.SetActive(true);
+        damageCollider.isTrigger = true;
+        damageCollider.enabled = false;
+    }
+
+    public void EnableDamageCollider()
+    {
+        damageCollider.enabled = true;
+    }
+
+    public void DisableDamageCollider()
+    {
+        damageCollider.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if(collision.tag == "Player")
+        {
+            PlayerStats playerStats = collision.GetComponent<PlayerStats>();
+            
+
+            if(playerStats != null )
+            {
+                playerStats.TakeDamage(currentWeaponDamage);
+            }
+        }
+
+        if(collision.tag == "Enemy")
+        {
+            EnemyStats enemyStats = collision.GetComponent<EnemyStats>();
+            if(enemyStats != null )
+            {
+                enemyStats.TakeDamage(currentWeaponDamage);
+            }
+        }
+    }
+}
 
 
-애니메이션 이벤트
+```
+
+
+
+# 그 외 수정사항
+
+## WeaponSlotManager 스크립트 수정
+
+양손의 DamageCollider 변수를 선언한다.
+
+무기가 슬롯에 로드될 때마다 DamageCollider를 참조한다.
+
+애니메이션 이벤트에 사용할 Open, Close 함수들을 만든다.
+
+```c#
+public class WeaponSlotManager : MonoBehaviour
+{
+    WeaponHolderSlot leftHandSlot;
+    WeaponHolderSlot rightHandSlot;
+
+    DamageCollider leftHandDamageCollider;      
+    DamageCollider rightHandDamageCollider;
+
+    private void Awake()
+    {
+        WeaponHolderSlot[] weaponHolderSlots = GetComponentsInChildren<WeaponHolderSlot>();
+        foreach  (WeaponHolderSlot weaponSlot in weaponHolderSlots)
+        {
+            if(weaponSlot.isLeftHandSlot)
+            {
+                leftHandSlot = weaponSlot;
+            }
+            else if (weaponSlot.isRightHandSlot)
+            {
+                rightHandSlot = weaponSlot;
+            }
+        }
+    }
+
+    public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft)
+    {
+        if(isLeft)
+        {
+            leftHandSlot.LoadWeaponModel(weaponItem);
+            LoadLeftWeaponDamageCollider();
+        }
+        else
+        {
+            rightHandSlot.LoadWeaponModel(weaponItem);
+            LoadRightWeaponDamageCollider();
+        }
+    }
+
+    #region Handle Weapon's Damage Collider
+
+
+    private void LoadLeftWeaponDamageCollider()
+    {
+        leftHandDamageCollider = leftHandSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
+    }
+
+    private void LoadRightWeaponDamageCollider()
+    {
+        rightHandDamageCollider = rightHandSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
+    }
+
+    public void OpenRightDamageCollider()
+    {
+        rightHandDamageCollider.EnableDamageCollider();
+    }
+
+    public void OpenLeftDamageCollider()
+    {
+        leftHandDamageCollider.EnableDamageCollider();
+    }
+
+    public void CloseRightHandDamageCollider()
+    {
+        rightHandDamageCollider.DisableDamageCollider();
+    }
+
+    public void CloseLeftHandDamageCollider()
+    {
+        leftHandDamageCollider.DisableDamageCollider();
+    }
+    #endregion
+}
+```
+
+<br>
+
+# 애니메이션 이벤트
