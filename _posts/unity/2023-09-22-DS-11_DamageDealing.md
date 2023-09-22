@@ -258,3 +258,67 @@ public class WeaponSlotManager : MonoBehaviour
 <br>
 
 # 애니메이션 이벤트
+WeaponSlotManager에 추가된 Open, Close함수를 애니메이션 이벤트를 통해 실행한다.
+
+## 애니메이션 이벤트 추가
+
+애니메이션 창을 띄운다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/ccb8250e-a5bd-48e2-a540-643916502ffd)
+
+<br>
+
+Scene창에서 Player를 찾아 클릭한다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/671565c4-4c44-45b1-914b-7e9240c79e3f)
+
+<br>
+
+이벤트를 추가할 애니메이션을 클릭한다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/9a8a91ef-affe-419f-bd0a-2360668bd50a)
+
+<br>
+
+`이때 애니메이션 ReadOnly 상태면 이곳에서 이벤트를 추가할 수 없다.`
+<details>
+<summary>해결방법</summary>
+<div markdown="1">       
+
+애니메이션을 복사하여 갈아껴준다.
+
+단순히 애니메이션만 복사하여 갈아껴주면된다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/cc581e35-c820-40a0-8ee4-dd9ae4496224)
+
+
+<img width="443" alt="image" src="https://github.com/novicehog/comments/assets/131991619/8d13ec49-37c6-4bba-a7b8-c61237932c7b">
+
+
+<br>
+
+</div>
+</details> 
+
+
+
+애니메이션을 재생해보며 원하는 타이밍에 
+검의 콜라이더를 끄고 키는 스크립트를 추가한다.
+
+
+
+![image](https://github.com/novicehog/comments/assets/131991619/f225a64a-436a-4131-84e3-b6fcf9d95483)
+
+![image](https://github.com/novicehog/comments/assets/131991619/7e064cd8-d9de-4fe0-94d4-fd81bc8b94e2)
+
+
+
+
+# 결과
+
+![ezgif com-optimize](https://github.com/novicehog/comments/assets/131991619/509d547a-c079-4114-861c-8dcbc9808d7a)
+
+<br>
+
+# 배운점
+- 애니메이션 이벤트에 대해 알 수 있었다.
