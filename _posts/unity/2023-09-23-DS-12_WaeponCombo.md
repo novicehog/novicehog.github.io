@@ -444,4 +444,11 @@ public class AnimatorHandler : MonoBehaviour
 
 # 결과
 
+![ezgif com-optimize (1)](https://github.com/novicehog/comments/assets/131991619/1a970e09-5a6b-4084-a64a-9170087a9ae7)
 
+
+
+# 배운점
+- 애니메이션 클립을 string으로 관리하는 예를 콤보공격을 통해 알 수 있었다.
+- 콤보 공격의 구현 원리에 대해 알게 되었다.
+ 
