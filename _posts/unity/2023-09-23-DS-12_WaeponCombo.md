@@ -15,6 +15,10 @@ last_modified_at: 2023-09-22
 
 ---
 
+이 글은 유튜브 **Sebastian Graves Create Dark Souls**를 보고 따라 만들면서 헷갈리는 부분을 정리한 글입니다.
+{: .notice--warning}
+
+
 # 구현 개요
 연속으로 공격하면 그에 맞는 공격이 나가게 되도록 구현한다.
 

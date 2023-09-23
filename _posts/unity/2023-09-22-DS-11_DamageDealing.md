@@ -15,6 +15,10 @@ last_modified_at: 2023-09-22
 
 ---
 
+이 글은 유튜브 **Sebastian Graves Create Dark Souls**를 보고 따라 만들면서 헷갈리는 부분을 정리한 글입니다.
+{: .notice--warning}
+
+
 
 # 구현 원리
 TriggerEnter를 통해 데미지를 구현한다. <br>
