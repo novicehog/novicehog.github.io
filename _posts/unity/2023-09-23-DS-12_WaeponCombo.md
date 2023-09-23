@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "유니티 다크소울 따라만들기 ch_12 무기 콤보"
+title:  "유니티 다크소울 따라만들기 ch_12 콤보 공격"
 categories: 
     - Unity
 tag: [Unity, DarkSouls]
