@@ -17,3 +17,12 @@ last_modified_at: 2023-09-23
 
 이 글은 유튜브 **Sebastian Graves Create Dark Souls**를 보고 따라 만들면서 헷갈리는 부분을 정리한 글입니다.
 {: .notice--warning}
+
+
+레이어 추가
+
+아바타 마스크 추가
+
+애니메이터 수정
+
+웨폰 아이템 스크립트 수정
