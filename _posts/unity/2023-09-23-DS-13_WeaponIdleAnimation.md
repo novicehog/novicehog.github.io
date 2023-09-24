@@ -129,5 +129,21 @@ public void LoadWeaponOnSlot(WeaponItem weaponItem, bool isLeft)
 
 <br>
 
+# 결과
+
+적용 전
+
+![image](https://github.com/novicehog/comments/assets/131991619/23f3b275-e123-4951-bc24-591493ff5c81)
+
+<br>
+
+`적용 후`
+
+![image](https://github.com/novicehog/comments/assets/131991619/fb695a3f-dc61-48d9-ac31-fdd9ed911df8)
+
+
+<br>
+
+
 # 배운점
 - 아바타 마스크를 통해 부위별 애니메이션을 다르게 주는 방법을 알았다.
