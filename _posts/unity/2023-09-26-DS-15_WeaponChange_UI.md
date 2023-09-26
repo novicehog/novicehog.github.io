@@ -144,6 +144,7 @@ weaponItem 스크립터블 오브젝트에 넣어준다.
 
 ![ezgif com-video-to-gif](https://github.com/novicehog/comments/assets/131991619/641cfee2-1f2d-4b38-93c5-46751e86dcfe)
 
+<br>
 
 # 배운점
 - Png로 변환하는 간단한 방법을 찾아낼 수 있었다.
