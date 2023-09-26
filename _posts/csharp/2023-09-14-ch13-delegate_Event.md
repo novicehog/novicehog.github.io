@@ -233,3 +233,43 @@ internal class Program
 
 
 ## 대리자 체인
+
+대리자는 `여러개의 메소드를 동시에 참조`할 수 있다.
+
+`+=`를 통해 메소드를 여러개 넣어주면 된다.
+
+```c#
+internal class Program
+{
+    delegate void ThereIsAFire(string location);
+
+    static void Call119(string location)
+    {
+        Console.WriteLine("소방서죠? 불났어요! 주소는 {0}", location);
+    }
+    static void ShotOut(string location)
+    {
+        Console.WriteLine("피하세요! {0}에 불이 났어요!", location);
+    }
+    static void Escape (string location)
+    {
+        Console.WriteLine("{0}에서 나갑시다!", location);
+    }
+
+    static void Main(string[] args)
+    {
+        ThereIsAFire Fire = new ThereIsAFire(Call119);
+        Fire += new ThereIsAFire(ShotOut);
+        Fire += new ThereIsAFire(Escape);
+
+        Fire("우리집");
+        //소방서죠? 불났어요! 주소는 우리집
+        //피하세요! 우리집에 불이 났어요!
+        //우리집에서 나갑시다!
+    }
+}
+```
+
+<br>
+
+`-=`을 통해 체인을 끊어내는 것 역시 가능하다.

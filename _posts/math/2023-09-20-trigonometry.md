@@ -89,4 +89,6 @@ $$
 
 ## 코사인 법칙
 
+세 변의 길이를 알면 모든 각을 구할 수 있다.
 
+![image](https://github.com/novicehog/comments/assets/131991619/bae65cbf-9f41-45ae-bb4b-1025996e8eb3)
