@@ -376,6 +376,13 @@ public class PlayerManager : MonoBehaviour
 
 ![image](https://github.com/novicehog/comments/assets/131991619/3ef53253-3738-4b3a-a80f-d187ed447ece)
 
+<br>
 
-##
+## PlayerInventory 파라미터 추가
+
+![image](https://github.com/novicehog/comments/assets/131991619/baa64501-904d-41a0-ad9a-0b246d0b2cdb)
+
+## 결과
+
+![ezgif com-optimize](https://github.com/novicehog/comments/assets/131991619/fd958a59-ef37-4d9a-95fe-63d7e36a0725)
 
