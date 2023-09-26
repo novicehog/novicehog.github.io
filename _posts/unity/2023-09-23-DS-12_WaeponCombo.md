@@ -10,8 +10,8 @@ author_profile: true # 옆에뜨는 프로파일
 
 search: true #검색해도 안뜨게함
 
-date: 2023-09-22
-last_modified_at: 2023-09-22
+date: 2023-09-23
+last_modified_at: 2023-09-23
 
 ---
 
