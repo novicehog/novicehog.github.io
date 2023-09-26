@@ -12,19 +12,20 @@ date: 2023-09-26
 last_modified_at: 2023-09-26
 ---
 
-# 반복문, switch, 함수
+<br>
 
 # 반복문
 
-없어진 문법
+## for문
 
-c언어의 반복문과 같은 스타일은 사용할 수 없다.
+c언어의 반복문과 같은 스타일은 `사용할 수 없다`.
 
 ```swift
 for var i = 0; i < 10; i+=1 { // for i in 0..<10 로 수정해야 함
 print(i)
 } //error: C-style for statement has been removed in Swift 3
 ```
+<br>
 
 위와 같은 반복문을 swift에서 실행하려면 다음과 같이 수정 해야함.
 
@@ -33,8 +34,9 @@ for i in 0..<10{
     print(i)
 }
 ```
+<br>
 
-반복문에서 제어 변수가 사용되지 않으면 경고가 발생한다.
+반복문에서 제어 변수가 사용되지 않으면 `경고가 발생`한다.
 
 ```swift
 for i in 0..<10{
@@ -42,6 +44,7 @@ for i in 0..<10{
 }
 //warning: immutable value 'i' was never used; consider replacing with '_' or removing it
 ```
+<br>
 
 이 경우 제어 변수 자리에  `_` 을 대신 사용해주면 된다.
 
@@ -55,6 +58,7 @@ for _ in 0..<5{
 //3 Sungho Choi
 //4 Sungho Choi
 ```
+<br>
 
 문자열과 제어변수를 같이 쓰고싶다면 `\()` 를 사용하면 된다.
 
@@ -63,19 +67,21 @@ for i in 0..<5{
     print("\(i) Sungho Choi")
 }
 ```
+<br>
 
 배열과 함께 쓰기
 
 ```swift
-let ranges = ["범", "위", "지", "정"]
+let ranges = ["배", "열", "좋", "아"]
 for word in ranges {
 print(word , terminator: " ")
 }
-//범 위 지 정
+//배 열 좋 아
 
 ```
+<br>
 
-범위 지정자 연산자와 함께 쓸 수 있다.
+`범위 지정자 연산자`와 함께 쓸 수 있다.
 
 ```swift
 let ranges = ["범", "위", "지", "정"]
@@ -84,8 +90,9 @@ print(word , terminator: " ")
 }
 //범 위
 ```
+<br>
 
-딕셔너리와도 같이 쓸 수 있다.
+`딕셔너리`와도 같이 쓸 수 있다.
 
 ```swift
 let numberOfLegs = ["Spider": 8, "Ant": 6, "Dog": 4]
@@ -98,6 +105,10 @@ print("\(animalName)s have \(legCount) legs")
 //Ants have 6 legs
 //Spiders have 8 legs
 ```
+<br>
+
+
+## while문 
 
 while문은 다음과 같다.
 
@@ -115,8 +126,9 @@ print(myCount)
 //400
 //500
 ```
+<br>
 
-repeat while이라고 다른 언어에서 do while문과 같은 역할을 하는 문법도 있다.
+`repeat while`이라고 다른 언어에서 do while문과 같은 역할을 하는 문법도 있다.
 
 ```swift
 var i = 4
@@ -129,12 +141,13 @@ print(i) //출력 결과
 //1
 //0
 ```
+<br>
 
-반복문 탈출
+## 반복문 탈출
 
-break와 continue를 사용한다
+`break`와 `continue`를 사용한다
 
-break문은 반복문 자체를 탈출한다.
+`break`문은 반복문 자체를 `탈출`한다.
 
 swift에서는 if문의 실행문이 한 줄만 있어도 무조건 중괄호 `{}`와 함께 쓰여야 한다
 
@@ -152,7 +165,7 @@ for i in 1..<10 {
 }
 ```
 
-continue는 반복문의 현재 실행문을 넘어간다.
+`continue`는 반복문의 `현재 실행문`을 넘어간다.
 
 ```swift
 for i in 1...6 {
@@ -165,6 +178,8 @@ for i in 1...6 {
 //4
 //6
 ```
+
+<br>
 
 ## if문
 
@@ -188,6 +203,8 @@ if a < b, d < c {
 //&&
 //,콤마
 ```
+
+<br>
 
 다중 if else
 
@@ -214,7 +231,9 @@ print("BMI:\(bmi), 판정:\(body)")
 //BMI:23.40750912892856, 판정:정상
 ```
 
-### switch문
+<br>
+
+# switch문
 
 switch문은 각 case 문 마다 break가 자동적으로 있기에 
 
@@ -233,9 +252,11 @@ switch someCharacter {
 // Prints "The last letter of the alphabet"
 ```
 
-주의 사항
+<br>
 
-swift문에서 case문에는 실행 문장이 무조건 있어야 한다.
+**주의 사항**
+
+swift문에서 `case문에는 실행 문장이 무조건 있어야 한다.`
 
 ```swift
 let anotherCharacter: Character = "a"
@@ -247,6 +268,8 @@ default:
 	print("A글자 아님")
 }
 ```
+
+<br>
 
 switch case문 에서`,` 는 if문의 조건문과 다르게 `or` 의 의미를 가진다
 
@@ -265,6 +288,8 @@ switch(value)
 		print("월을 잘못 입력하셨습니다")
 }
 ```
+
+<br>
 
 위의 if문에서 만든 BMI측정기를 switch문을 통해 더 보기 좋게 할 수 있다.
 
@@ -289,11 +314,12 @@ switch bmi{
 print("BMI:\(bmi), 판정:\(body)")
 ```
 
-switch where절
+<br>
 
-부가적인 조건을 추가로 줄 때 where절을 사용한다.
+## switch where절
 
-과제
+부가적인 조건을 추가로 줄 때 `where절`을 사용한다.
+
 
 ```swift
 let ice = "민트초코"
@@ -313,7 +339,9 @@ default :
 }
 ```
 
-switch, catch, while, guard, for 등에서 사용 가능
+`switch, catch, while, guard, for` 등에서 사용 가능
+
+<br>
 
 아래는 for문의 예시다.
 
@@ -327,25 +355,27 @@ print(num)
 //5
 ```
 
-### fallthrough
+<br>
 
-switch문에 자동으로 들어있는 break가 불필요하다면 fallthrough 사용할 수 있다.
+## fallthrough
+
+switch문에 자동으로 들어있는 `break가 불필요`하다면 `fallthrough 사용`할 수 있다.
 
 ```swift
 var value = 3
 switch (value)
 {
 case 4:
-print("4")
-fallthrough
+    print("4")
+    fallthrough
 case 3:
-print("3")
-fallthrough
+    print("3")
+    fallthrough
 case 2:
-print("2")
-fallthrough
+    print("2")
+    fallthrough
 default:
-print("1")
+    print("1")
 }
 
 //3
@@ -357,7 +387,7 @@ print("1")
 
 함수 정의부의 값을 `parameter(매개변수, 인자)`, 호출시의 값은 `argument(인수)`라고 부름
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/4c7c3782-2fe7-4e8c-9548-34681df59242/Untitled.png)
+![Untitled](https://github.com/novicehog/comments/assets/131991619/ffdea149-5d50-4ca8-af3c-5239458841e6)
 
 ## 함수명
 
@@ -378,6 +408,8 @@ func <함수명> (<매개변수 이름>: <매개변수 타입>, <매개변수 �
 }
 ```
 
+<br>
+
 함수 예시
 
 ```swift
@@ -388,6 +420,8 @@ func sayHello() -> Void{ // 정의
 sayHello() // 호출(call)
 ```
 
+<br>
+
 리턴값이 없으면 `→ Void`는 생략할 수 있다.
 
 ```swift
@@ -395,6 +429,8 @@ func sayHello() { // 정의
     print("Hello")
 }
 ```
+
+<br>
 
 타입을 측정할 수 있다.
 
@@ -406,9 +442,11 @@ print(type(of:sayHello))
 //() -> ()
 ```
 
+<br>
+
 주의 사항
 
-매개변수가 있는 함수의 경우 호출할 때 지정 해줘야 한다.
+매개변수가 있는 함수의 경우 `호출할 때 지정` 해줘야 한다.
 
 ```swift
 func add(x:Int, y:Int)-> Int{ 
@@ -417,6 +455,8 @@ func add(x:Int, y:Int)-> Int{
 print(add(x:10,y:20)) // 인수와 매개변수 지정
 // 30
 ```
+
+<br>
 
 매개변수와 반환 값이 있는 함수의 경우 타입을 측정하면 다음과 같다.
 
@@ -432,9 +472,11 @@ func add2(x:Int, y:Int, z:Int)-> Int{
 print(type(of:add2)) //(Int, Int, Int) -> Int
 ```
 
+<br>
+
 `argument label(외부)`과 `parameter name(내부)`을 각각 지정할 수 있다.
 
-따로 지정해주지 않으면 내부가 외부를 겸한다.
+따로 지정해주지 않으면 `내부가 외부를 겸`한다.
 
 ```swift
 func add(first x: Int, second y: Int) -> Int {
@@ -445,6 +487,8 @@ return(x+y) //함수 정의할 때는 내부 매개변수명을 사용
 add(first:10, second:20) // 30
 ```
 
+<br>
+
 `_` 를 사용해서 다른 언어처럼 호출할 수 있다.
 
 ```swift
@@ -453,6 +497,8 @@ return(x+y)
 } 
 print(add(10,20))
 ```
+
+<br>
 
 혼합하여 사용하면 다음과 같다.
 
@@ -465,4 +511,41 @@ return(x+y)
 print(add(10,with:20))
 ```
 
+<br>
+
 함수명을 출력해보면 다음과 같다.
+
+```swift
+func add1( x: Int,  y: Int) -> Int {
+print(#function) 
+return(x+y)
+} 
+
+func add2(first x: Int, second y: Int) -> Int {
+print(#function)
+return(x+y)
+} 
+
+
+func add3(_ x: Int, _ y: Int) -> Int {
+print(#function)
+return(x+y)
+} 
+
+func add4(_ x: Int, with y: Int) -> Int {
+print(#function)
+return(x+y)
+} 
+
+add1(x : 10 , y : 20)
+add2(first : 10, second : 10)
+add3(10, 20)
+add4(10, with:20)
+
+// add1(x:y:)
+// add2(first:second:)
+// add3(_:_:)
+// add4(_:with:)
+```
+
+
