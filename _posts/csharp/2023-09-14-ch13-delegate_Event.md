@@ -273,3 +273,42 @@ internal class Program
 <br>
 
 `-=`을 통해 체인을 끊어내는 것 역시 가능하다.
+
+
+
+## 익명 메소드
+
+익명 메소드는 이름이 없는 메소드를 뜻한다.
+
+익명 메소드는 다음과 같이 선언한다.
+
+```c#
+대리자_인스턴스 = delegate (매개변수_목록)
+                {
+                    // 실행하려는 코드 ...
+                }
+```
+
+<br>
+
+예시는 다음과 같다.
+
+```c#
+delegate int Calculate(int a, int b);
+
+public static void Main()
+{
+    Calculate Calc;
+    Calc = delegate (int a, int b)
+    {
+        return a + b;
+    };
+
+    Console.WriteLine("3 + 4 : {0}", Calc(3, 4));
+}
+```
+
+<br>
+
+익명 메소드는 자신이 참조할 대리자의 형식과 동일해야 한다. <br>
+`반환 형식`과 `매개변수 형식, 개수` 같은 것들을 모두 맞춰줘야한다.
