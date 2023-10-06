@@ -427,6 +427,21 @@ internal class Program
 사실 이벤트는 대리자의 한 종류로 대리자와 똑같이 사용된다.
 
 유일한 차이로는 이벤트는 public으로 선언되어도 `외부에서 직접 호출될 수 없다`는 점이다.
+```c#
+public static void Main(string[] args)
+{
+    MyNotifier notifier = new MyNotifier();
+    notifier.SomethingHappend += new EventHandler(MyHandler);
+    notifier.SomethingHappend("test"); // event는 이곳에서 호출될 수 없음
+
+    for (int i = 0; i < 30; i++)
+    {
+        notifier.DoSomething(i);
+    }
+}
+```
+
+<br>
 
 따라서 대리자는 대리자대로 `콜백 용도`로 사용하고, <br>
 이벤트는 이벤트대로 `객체의 상태 변화나 사건의 발생을 알리는 용도`로 구분하여 사용해야함
