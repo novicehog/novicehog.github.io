@@ -312,3 +312,121 @@ public static void Main()
 
 익명 메소드는 자신이 참조할 대리자의 형식과 동일해야 한다. <br>
 `반환 형식`과 `매개변수 형식, 개수` 같은 것들을 모두 맞춰줘야한다.
+
+사용 예시
+
+t
+```c#
+internal class Program
+{
+    delegate int Compare<T>(T a, T b);
+    static void BubbleSort<T>(T[] DataSet, Compare<T> Comparer)
+    {
+        int i = 0;
+        int j = 0;
+        T temp;
+
+        for (i = 0; i < DataSet.Length - 1; i++)
+        {
+            for (j = 0; j < DataSet.Length - (i + 1); j++)
+            {
+                if (Comparer(DataSet[j], DataSet[j + 1])> 0)
+                {
+                    temp = DataSet[j + 1];
+                    DataSet[j + 1] = DataSet[j];
+                    DataSet[j] = temp;
+                }
+            }
+        }
+    }
+    public static void Main(string[] args)
+    {
+        int[] array = { 3, 7, 4, 2, 10 };
+
+        Console.WriteLine("Sorting ascending...");
+        BubbleSort<int>(array, delegate (int a, int b) // 익명 메소드
+        {
+            if (a > b)
+                return 1;
+            else if (a == b)
+                return 0;
+            else
+                return -1;
+        });
+
+        for (int i = 0; i < array.Length; i++)
+            Console.Write($"{array[i]} ");
+
+        int[] array2 = { 7, 2, 8, 10, 11 };
+        Console.WriteLine("\nSorting descending...");
+        BubbleSort(array2, delegate (int a, int b) // 익명 메소드
+        {
+            if (a < b)
+                return 1;
+            else if (a == b)
+                return 0;
+            else
+                return -1;
+        });
+
+        for (int i = 0; i < array2.Length; i++)
+            Console.Write($"{array2[i]} ");
+        
+        Console.WriteLine();
+    }
+}
+
+```
+
+<br>
+
+## event 이벤트 : 객체에 일어난 사건 알리기
+
+다음은 이벤트를 이용하여 3의 배수마다 호출을 하는 예시이다
+
+```c#
+delegate void EventHandler(string message);
+
+class MyNotifier
+{
+    public event EventHandler SomethingHappend;
+
+    public void DoSomething(int number)
+    {
+        int temp = number % 10;
+
+        if (temp != 0 && temp % 3 == 0)
+        {
+            SomethingHappend(String.Format("{0} : 짝", number));
+        }
+    }
+}
+
+internal class Program
+{
+    static public void MyHandler(string message)
+    {
+        Console.WriteLine(message);
+    }
+
+    public static void Main(string[] args)
+    {
+        MyNotifier notifier = new MyNotifier();
+        notifier.SomethingHappend += new EventHandler(MyHandler);
+
+        for (int i = 0; i < 30; i++)
+        {
+            notifier.DoSomething(i);
+        }
+    }
+}
+```
+
+<br>
+
+사실 이벤트는 대리자의 한 종류로 대리자와 똑같이 사용된다.
+
+유일한 차이로는 이벤트는 public으로 선언되어도 `외부에서 직접 호출될 수 없다`는 점이다.
+
+따라서 대리자는 대리자대로 `콜백 용도`로 사용하고, <br>
+이벤트는 이벤트대로 `객체의 상태 변화나 사건의 발생을 알리는 용도`로 구분하여 사용해야함
