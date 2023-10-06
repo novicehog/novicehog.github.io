@@ -9,7 +9,7 @@ published: true
 author_profile: true # 옆에뜨는 프로파일
 
 date: 2023-09-14
-last_modified_at: 2023-09-14
+last_modified_at: 2023-10-06
 ---
 <!-- 
 {: .notice--warning} // 알림 강조
