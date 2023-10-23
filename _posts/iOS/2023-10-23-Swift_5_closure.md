@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "5. 클로저, 클래스"
+title: "클로저, 클래스"
 categories: 
     - iOS
 tag: [iOS,Swift]
