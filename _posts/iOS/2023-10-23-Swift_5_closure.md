@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "5. 클로저"
+title:  "5. 클로저, 클래스"
 categories: 
     - iOS
 tag: [iOS,Swift]
@@ -16,7 +16,7 @@ last_modified_at: 2023-10-23
 
 **Swift 언어에서 클로저는 이름 없이 작성되거나 변수나 상수에 할당될 수 있는 독립적인 코드 블럭**
 
- 클로저나 함수를 대입하교 호출할 떄는 argument labels이 필요없음
+ 클로저나 함수를 대입하교 호출할 떄는 `argument labels`이 필요없음
 
 ```swift
 // 함수
@@ -33,9 +33,9 @@ print(add1(x:10, y:20)) //error: extraneous argument labels 'x:y:' in call
 print(add1(10, 20))     // 클로저나 함수를 대입하교 호출할 때는 argument labels이 필요없음
 ```
 
-클로저는 익명메소드이며 swift의 메소드는 1급 객체이기 떄문에
+클로저는 `익명메소드`이며 swift의 `메소드는 1급 객체`이기 떄문에
 
-대입, 매개변수로 넣기, 리턴 값으로 받기가 모두 가능하다.
+`대입, 매개변수로 넣기, 리턴 값으로 받기가 모두 가능`하다.
 
 ```swift
 // 변수에 대입 ----------------------------------
@@ -86,7 +86,7 @@ return a + b
 }
 ```
 
-클로저의 축약형
+### 클로저의 축약형
 
 1. 리턴형을 생략할 수 있다.
 
@@ -106,7 +106,9 @@ return val1 + val2
 print(result)
 ```
 
-1. 매개변수를 생략하고 단축 인자(**Shorthand Argument Name**)를 사용 가능
+<br>
+
+2. 매개변수를 생략하고 단축 인자(**Shorthand Argument Name**)를 사용 가능
     
     이때 키워드 `in`도 함께 생략 가능
     
@@ -119,7 +121,9 @@ return $0 + $1
 print(result)
 ```
 
-1. return 생략 가능
+<br>
+
+3. return 생략 가능
 
 ```swift
 // return 생략
@@ -129,11 +133,15 @@ $0 + $1
 print(result)
 ```
 
+<br>
+
 모든 축약과 후행클로저까지 적용하면 한 줄로 나타낼 수 있다.
 
 ```swift
 result = math(x: 10, y: 20) { $0 + $1 } //return 생략
 ```
+
+<br>
 
 ## 클래스
 
@@ -141,11 +149,11 @@ result = math(x: 10, y: 20) { $0 + $1 } //return 생략
 
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/ca154985-81bb-438b-ab88-6c935123bbcb/Untitled.png)
 
-다른 언어에서 필드는 swift에선 프로퍼티라고 한다.
+`다른 언어에서 필드`는 `swift에선 프로퍼티`라고 한다.
 
-클래스 만들기
+### 클래스 만들기
 
-저장 프로퍼티(stored property) 추가하기
+#### 저장 프로퍼티(stored property) 추가하기
 
 stored property는 반드시 `초기값이 있거나`, `생성자가 있거나`, `옵셔널형으로 선언`되어야 함.
 
@@ -165,7 +173,7 @@ class Man{
 }
 ```
 
-### 인스턴스 메서드와 인스턴스 만들기
+#### 인스턴스 메서드와 인스턴스 만들기
 
 ```swift
 class Man{
@@ -180,11 +188,11 @@ var sung : Man = Man()
 sung.display()//나이=1, 몸무게=3.5
 ```
 
-### 클래스 메소드
+#### 클래스 메소드
 
-메소드 앞에 class나 static 키워드를 붙여서 선언할 수 있고,
+메소드 앞에 `class나 static 키워드`를 붙여서 선언할 수 있고,
 
-이 메소드들은 인스턴스가 아닌 클래스가 가지고 노는 메소드이다.
+이 메소드들은 인스턴스가 아닌 `클래스가 가지고 노는 메소드`이다.
 
 class키워드로 만든 클래스 메서드는 자식 클래스에서 override가능
 
@@ -258,7 +266,7 @@ var sung : Man = Man(age:10, weight:20.5)
 
 ```
 
-메소드 오버로딩
+### 메소드 오버로딩
 
 매개변수의 개수와 자료형이 다른 같은 이름의 함수를 여러 개 정의
 매개변수가 다른 두 생성자를 통해 두가지 방법으로 인스턴스를 만들 수 있음
