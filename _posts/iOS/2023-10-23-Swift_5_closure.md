@@ -145,9 +145,7 @@ result = math(x: 10, y: 20) { $0 + $1 } //return 생략
 
 ## 클래스
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/1cd1b40b-5d9b-4e54-bb4d-7361dc66ff92/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/ca154985-81bb-438b-ab88-6c935123bbcb/Untitled.png)
+![객체](https://github.com/novicehog/comments/assets/131991619/b97999fb-57fb-43ae-81fc-d5d655e084be)
 
 `다른 언어에서 필드`는 `swift에선 프로퍼티`라고 한다.
 
