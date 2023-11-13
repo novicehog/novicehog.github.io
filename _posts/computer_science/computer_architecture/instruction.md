@@ -9,7 +9,7 @@ published: true
 author_profile: true # 옆에뜨는 프로파일
 
 date: 2023-11-13
-last_modified_at: 2023-11-13
+last_modified_at: 2023-11-14
 ---
 
 # 명령어
@@ -33,6 +33,8 @@ last_modified_at: 2023-11-13
 
 소스코드들을 이러한 저급언어들로 변환시키는 과정은 크게 `컴파일`과 `인터프리트`가 있다.
 
+https://godbolt.org/ 이곳에서 소스코드->어셈블리어 의 변환과정을 볼 수 있다.
+
 ### 컴파일
 컴파일러라는 프로그램에 의해서 `소스코드 전체가 한 번에` 고급언어 -> 저급언어로 변환된다.
 
@@ -52,3 +54,86 @@ python, javaScript 등의 언어가 이 방식을 사용한다.
 ## 명령어의 구조
 명령어의 의미는 다음과 같다.
 >> `무엇을 대상`으로 `무엇을 수행`하라.
+
+이때 명령의 대상을 `오퍼랜드(operand)`라고 하며
+수행하는 무언가를 `연산 코드`라고 한다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/43e260e0-ba75-4963-b780-aa5526ee63d5)
+
+`오퍼랜드(operand)` : 명령어를 수행할 대상<br>
+`대상(데이터)이 직접 명시`되기도 하고, `대상의 위치`  `(레지스터 이름, 메모리 주소)`가 명시되기도 함
+
+
+`연산 코드` : 오퍼랜드로 수행할 동작
+
+대표적인 연산코드들
+
+![image](https://github.com/novicehog/comments/assets/131991619/11ad55e5-0036-491a-86cf-b7bd4e5910d7)
+
+![image](https://github.com/novicehog/comments/assets/131991619/562d5218-1ea8-4de9-b3dc-8ac378610eb5)
+
+![image](https://github.com/novicehog/comments/assets/131991619/6dd1b5f2-1c68-44c9-8804-46e363aab536)
+
+![image](https://github.com/novicehog/comments/assets/131991619/fb1914b8-4356-4943-b0c2-bf76461eca9c)
+
+
+## 주소 지정
+연산 코드의 대상이 되는 `데이터를 찾아가는 방법` <br>
+CPU마다 주소지정 방법은 차이가 있음.
+
+유효 주소 : 연산 코드에 `사용할 데이터가 저장된 위치`, 즉 연산의 대상이 되는 데이터가 저장된 위치.
+
+
+**데이터를 직접 명시하지 않고 `위치를 명시`하는 이유는?**
+
+명령어의 `길이가 한정`되어있기 때문
+데이터 자체를 명시한다면 주어진 `오퍼랜드 필드의 크기 이상의 데이터는 저장될 수 없다.`
+하지만 데이터의 주소를 저장한다면 주소 자체의 데이터 크기는 몰라도 `값 자체의 크기에는 영향받지 않음.`
+
+![image](https://github.com/novicehog/comments/assets/131991619/3eb1e897-6664-4705-9480-c062c4fcbfd0)
+
+### 주소지정 방법 5가지
+
+#### 즉시 주소 지정
+
+연산에 사용할 데이터를 오퍼랜드 필드에 `직접 명시`
+
+가장 빠른 주소 지정 + 데이터 크기에 제한
+
+![image](https://github.com/novicehog/comments/assets/131991619/9bd02db2-9cdf-4e65-9502-72541237de8f)
+
+#### 직접 주소 지정
+
+오퍼랜드 필드의 `유효 주소(연산에 사용될 데이터가 저장된 메모리 주소) 명시`
+
+오퍼랜드 필드로 표현 가능한 메모리 주소 크기에 제한
+
+**중요** * `CPU는 레지스터에 접근하는 속도 보다 메모리에 접근하는 속도가 훨신 느리다.`
+
+![image](https://github.com/novicehog/comments/assets/131991619/ff2836bd-0c7e-45b8-abf3-f3ae360deaa4)
+
+#### 간접 주소 지정
+
+오퍼랜드 필드에 `유효 주소의 주소` 명시
+
+유효 주소 `크기에 제한은 없`으나, `속도가 비교적 느림`
+
+![image](https://github.com/novicehog/comments/assets/131991619/24f2d71a-ff3f-4587-b9ea-9e0c01593490)
+
+#### 레지스터 주소 지정
+
+연산에 사용할 `데이터를 저장한 레지스터`를 오퍼랜드 필드에 `직접 명시`
+
+레지스터는 CPU안에 있으므로 레지스터 접근은 `메모리 접근보다 빠르다`
+
+![image](https://github.com/novicehog/comments/assets/131991619/7275e4c9-802c-487a-92cb-7c4c17dcb602)
+
+#### 레지스터 간접 주소 지정
+
+연산에 사용할 데이터를 메모리에 저장,
+
+그 주소(유효 주소)를 저장한 레지스터를 오퍼랜드 필드에 명시
+
+즉 레지스터 1번 메모리 1번 접근
+
+![image](https://github.com/novicehog/comments/assets/131991619/7713be14-7dc3-42a1-a021-e9086052cf99)
