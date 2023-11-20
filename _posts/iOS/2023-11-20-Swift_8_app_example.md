@@ -67,29 +67,44 @@ last_modified_at: 2023-11-20
 
 view Controller에서 `connections inspector`를 통해 `outlets(변수)`나 `Action(함수)`의 `연결 상태`를 볼 수있다.
 
+
+![13](https://github.com/novicehog/comments/assets/131991619/c4ef466d-de8d-4c81-b241-71a0a5ead7ee)
+
 ![8](https://github.com/novicehog/comments/assets/131991619/15ebad31-6d8a-4a9b-b07b-865ee3e76fd9)
 
-text입력창의 경우 PlayerHolder를 이용해서 안내문구를 작성할 수 있다.
 
-![스크린샷 2023-11-14 오전 10.44.27.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/8fbaece8-59a7-4662-b0d3-a5dfd4f92145/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.44.27.png)
 
-date picker
+`text입력창`의 경우 `PlayerHolder를 이용해서 안내문구를 작성`할 수 있다.
 
-날짜 기능을 가지고 있는  오브젝트이다.
+![9](https://github.com/novicehog/comments/assets/131991619/93b053be-00c0-4905-9dc3-1bd7a24c9333)
+
+
+***
+
+`date picker`
+
+`날짜 기능`을 가지고 있는  `오브젝트`이다.
 
 모드는 표시형식에 따라 네 가지가 있다.
 
-![스크린샷 2023-11-14 오전 11.09.23.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/c4afd152-74e8-4d74-8bdf-fd9de0a2f37f/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.09.23.png)
+![10](https://github.com/novicehog/comments/assets/131991619/5be5ee5b-4724-4745-9424-b179f88be87d)
 
-Tab bar를 사용하여 여러 페이지로 구성할 수 있다.
+***
 
-![스크린샷 2023-11-14 오전 11.37.25.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/b6c3068a-4bd9-44bd-814d-f1052c0ba72b/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.37.25.png)
+`Tab bar`를 사용하여 `여러 페이지로 구성`할 수 있다.
 
-tab bar와 비슷하게 navigation controller 도 있다.
+![11](https://github.com/novicehog/comments/assets/131991619/ce204f8c-4769-4111-8980-0862fe3132c0)
+
+tab bar와 비슷하게 `navigation controller` 도 있다.
 
 이것도 역시 여러 페이지 구성을 가능하게 해준다.
 
-![스크린샷 2023-11-14 오전 11.40.22.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/39b6f9eb-a9b6-4f51-8e35-fada792e5a1c/d21a5a57-c744-4572-bb34-94c73feda76f/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.40.22.png)
+![12](https://github.com/novicehog/comments/assets/131991619/1f432cf6-a04a-4434-8aa5-8ff1787b2bd6)
+
+
+***
+
+`간단한 BMI 코드`
 
 ```swift
 import Foundation
@@ -127,16 +142,22 @@ print(han.calcBMI())
 
 **이 코드는 BMI(체질량지수)를 계산하는 클래스를 정의하고, 이를 사용해서 한 사람의 BMI를 계산하는 코드다.**
 
-**`import Foundation`: Foundation 프레임워크를 불러옵니다. 이 프레임워크는 다양한 유틸리티, 데이터 타입 등을 제공합니다.**
+**`import Foundation`: Foundation 프레임워크를 불러옴. 이 프레임워크는 다양한 유틸리티, 데이터 타입 등을 제공.**
 
-**`class BMI`: BMI라는 이름의 클래스를 선언합니다.`var weight : Double`, `var height : Double`: BMI 클래스의 인스턴스 변수로, 몸무게와 키를 나타내는 두 개의 변수를 선언합니다. 두 변수 모두 Double 타입입니다.**
+**`class BMI`: BMI라는 이름의 클래스를 선언.`var weight : Double`, `var height : Double`: BMI 클래스의 인스턴스 변수로, 몸무게와 키를 나타내는 두 개의 변수를 선언.**
 
-**`init(weight:Double, height:Double)`: BMI 클래스의 초기화 메서드입니다. 이 메서드는 몸무게와 키를 매개변수로 받아서, 이를 인스턴스 변수에 저장합니다. 여기에서 `self`는 인스턴스 자신을 가리킵니다.**
+**`init(weight:Double, height:Double)`: BMI 클래스의 초기화 메서드. 이 메서드는 몸무게와 키를 매개변수로 받아서, 이를 인스턴스 변수에 저장. 여기에서 `self`는 인스턴스 자신을 가리킴.**
 
 **`func calcBMI() -> Double`: BMI를 계산하는 메서드입니다. 이 메서드는 몸무게를 키의 제곱으로 나눈 값을 반환합니다. 여기에서 키는 cm 단위이므로, m 단위로 변환하기 위해 0.0001을 곱합니다.**
 
-**`var choi = BMI(weight:62.5, height:172.3)`: BMI 클래스로부터 한 객체를 생성합니다. 이 객체의 몸무게는 62.5kg이고, 키는 172.3cm입니다.`print(choi.calcBMI())`: choi 객체의 BMI를 계산하고, 이를 출력합니다.**
+**`var choi = BMI(weight:62.5, height:172.3)`: BMI 클래스로부터 한 객체를 생성. 이 객체의 몸무게는 62.5kg이고, 키는 172.3cm.`print(choi.calcBMI())`: choi 객체의 BMI를 계산하고, 이를 출력.**
 
-**따라서 이 코드를 실행하면, 몸무게가 62.5kg이고 키가 172.3cm인 한 사람의 BMI를 계산해서 출력하는 결과를 볼 수 있습니다.**
+**따라서 이 코드를 실행하면, 몸무게가 62.5kg이고 키가 172.3cm인 한 사람의 BMI를 계산해서 출력함.**
 
-전체선택 후 ctrl + i : 코드 정렬
+
+
+***
+
+`앱 개발 절차`
+
+![14](https://github.com/novicehog/comments/assets/131991619/d966bf0a-2cdb-408d-a3e0-b33bd543958c)
