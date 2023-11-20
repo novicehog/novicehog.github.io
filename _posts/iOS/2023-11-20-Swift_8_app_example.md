@@ -20,6 +20,9 @@ last_modified_at: 2023-11-20
 
 ![1](https://github.com/novicehog/comments/assets/131991619/4b720de5-f051-4d92-af25-85f95d8eda2b)
 
+<br>
+
+***
 
 시뮬레이터 캡처 버튼은 다음과 같다. <br>
 누르면 화면이 깔끔하게 캡쳐됨
@@ -29,13 +32,20 @@ last_modified_at: 2023-11-20
 ![3](https://github.com/novicehog/comments/assets/131991619/7d63634c-a289-4999-a24e-74e961912f4b)
 
 
-## 프로젝트 설정
+<br>
+
+***
+`프로젝트 설정`
 
 `minimum deployments`는 `최소 버전`을 의미 <br>
 `Bundle identifier`은 `앱의 식별자 역할`을 함(유일해야함) <br>
 `iPhone orientation` 은 `핸드폰의 회전`을 나타냄
 
 ![4](https://github.com/novicehog/comments/assets/131991619/03d5fc3e-7273-4879-8b82-8d7dfd80318f)
+
+<br>
+
+***
 
 
 프로젝트에 기본으로 주어지는 세개의 swift파일이 있다.
@@ -46,6 +56,7 @@ last_modified_at: 2023-11-20
 
 <br>
 
+***
 `main 스토리 보드`는 `디자인적인 요소`들을 나타낸다.
 
 `safe Area`는 스마트폰의 기본적인 `UI 공간을 비워두고 나머지 작업 공간`을 뜻한다.
@@ -53,6 +64,8 @@ last_modified_at: 2023-11-20
 ![6](https://github.com/novicehog/comments/assets/131991619/38bec02d-5e6e-41bd-8e88-b4d09437dedc)
 
 <br>
+
+***
 
 
 버튼을 `마우스 오른쪽클릭`으로 누르면 `버튼에 여러가지 정보`를 볼 수 있음. <br>
@@ -72,12 +85,16 @@ view Controller에서 `connections inspector`를 통해 `outlets(변수)`나 `Ac
 
 ![8](https://github.com/novicehog/comments/assets/131991619/15ebad31-6d8a-4a9b-b07b-865ee3e76fd9)
 
+<br>
+
+***
 
 
 `text입력창`의 경우 `PlayerHolder를 이용해서 안내문구를 작성`할 수 있다.
 
 ![9](https://github.com/novicehog/comments/assets/131991619/93b053be-00c0-4905-9dc3-1bd7a24c9333)
 
+<br>
 
 ***
 
@@ -155,6 +172,8 @@ print(han.calcBMI())
 **따라서 이 코드를 실행하면, 몸무게가 62.5kg이고 키가 172.3cm인 한 사람의 BMI를 계산해서 출력함.**
 
 
+
+<br>
 
 ***
 
