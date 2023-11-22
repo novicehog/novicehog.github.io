@@ -4,6 +4,7 @@ title:  "[컴퓨터 구조] CPU"
 categories: 
     - cs
 tag: [cs, computer_architecture]
+
 published: true
 
 author_profile: true # 옆에뜨는 프로파일
