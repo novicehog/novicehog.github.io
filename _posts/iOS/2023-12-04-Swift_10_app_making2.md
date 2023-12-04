@@ -8,8 +8,8 @@ published: true
 
 author_profile: true # 옆에뜨는 프로파일
 
-date: 2023-11-27
-last_modified_at: 2023-11-27
+date: 2023-12-04
+last_modified_at: 2023-12-04
 ---
 
 ## 배경 추가하기
