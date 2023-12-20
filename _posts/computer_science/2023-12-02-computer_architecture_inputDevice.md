@@ -8,8 +8,8 @@ published: true
 
 author_profile: true # 옆에뜨는 프로파일
 
-date: 2023-11-23
-last_modified_at: 2023-11-23
+date: 2023-12-02
+last_modified_at: 2023-12-02
 ---
 
 이 글은 패스트캠퍼스의 **현실 세상의 컴퓨터공학 지식 with 30가지 실무 시나리오 초격차 패키지 Online.**를 보고 공부한 내용을 정리한 글입니다.
