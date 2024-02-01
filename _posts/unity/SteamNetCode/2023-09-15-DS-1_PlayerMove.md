@@ -80,3 +80,19 @@ last_modified_at: 2024-02-02
 Window -> Package Manager 에서 Unity Registry에서 Netcode for GameObject를 설치해주면 됨
 
 ![넷코드설치](https://github.com/novicehog/comments/assets/131991619/dac0137a-8e5e-401d-b1c5-aefdbf28dc9d)
+
+
+## 기본 세팅
+빈 객체 NetworkManager를 만들고 NetworkManager 스크립트를 추가
+
+![networkManager](https://github.com/novicehog/comments/assets/131991619/2036d660-830c-4b4d-8240-4f277f5c929a)
+
+<br>
+
+NetworkManager 컴포넌트에서 select transport를 FacePunchTransfort로 해줌
+
+![트랜스포트 설정](https://github.com/novicehog/comments/assets/131991619/3f82bb3d-d78d-4bd1-a25f-483ed1836368)
+
+이제 게임을 실행해보면 steam에서 자동으로 Spacewar(개발자용 테스트 게임)이 실행되며 연동되는 모습을 볼 수 있음.
+
+![스팀연동](https://github.com/novicehog/comments/assets/131991619/a8ba807a-f92b-4843-8ab6-79808c678fc8)
