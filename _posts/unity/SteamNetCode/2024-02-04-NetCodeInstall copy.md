@@ -21,9 +21,9 @@ last_modified_at: 2024-02-02
 ### FacePunchSteamworks
 스팀에서 제공해주는 steamworks는 사용하기가 힘들기 때문에 개선하여 만들어진 FacePunchSteamworks를 사용.
 
-[다운로드 링크](https://github.com/Facepunch/Facepunch.Steamworks)
+[다운로드 링크](https://github.com/Facepunch/Facepunch.Steamworks/releases/tag/2.3.2)
 
-![image](https://github.com/novicehog/comments/assets/131991619/efe18374-93be-42fb-8fd1-425c1a9daadb)
+![image](https://github.com/novicehog/comments/assets/131991619/bcb493d5-d31c-48f6-acec-b7119c48638a)
 
 ### multiplayer-community-contributions
 멀티플레이 관련 코드와 자료들을 모아놓은 곳.
