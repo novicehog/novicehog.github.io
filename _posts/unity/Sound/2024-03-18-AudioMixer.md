@@ -179,3 +179,5 @@ public class VolumeUI : MonoBehaviour
     }
 }
 ```
+
+이것으로 소리 조절과 저장까지를 구현하였다.
