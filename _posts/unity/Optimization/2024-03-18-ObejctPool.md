@@ -36,7 +36,7 @@ last_modified_at: 2024-03-18
 ## 유니티의 오브젝트 풀링
 유니티에서는 오브젝트 풀링 기능을 지원한다.
 
-using UnityEngin.Pool을 통해 사용할 수 있으며 IObjectPool<T> 를 통해 풀을 생성한다.<br>
+using UnityEngin.Pool을 통해 사용할 수 있으며 IObjectPool 를 통해 풀을 생성한다.<br>
 IObjectPool은 초기화 할 때 `네 가지의 함수`를 함께 넣어줘야 한다. (OnCreate, OnGet, OnRelease, OnDestory)
 이 함수들을 통해 풀링 오브젝트의 `생성, 사용, 반환, 삭제`를 구한현다.
 이 네 가지 함수만 구현해 놓으면 유니티에서 지원하는 기능을 통해 풀의 오브젝트 개수가 `유동적으로 변환`된다. (ex 현재 사용해야할 총알수가 풀이 가진 오브젝트보다 많을 시 풀 오브젝트를 더 생성)
