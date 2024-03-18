@@ -119,6 +119,7 @@ public class VolumeUI : MonoBehaviour
     }
 }
 ```
+<br>
 
 
 
@@ -145,14 +146,17 @@ public class VolumeUI : MonoBehaviour
     public Slider musicSlider;
     public Slider SFXSlider;
 
+    private void Start()
+    {
+        SetMusicVolume(PlayerPrefs.GetFloat(k_MusicVolumeKey));
+        SetSFXVolume(PlayerPrefs.GetFloat(k_SFXVolumeKey));
+    }
     private void OnEnable()
     {
         musicSlider.value = PlayerPrefs.GetFloat(k_MusicVolumeKey);
-        SetMusicVolume(musicSlider.value);
         musicSlider.onValueChanged.AddListener(SetMusicVolume);
 
         SFXSlider.value = PlayerPrefs.GetFloat(k_SFXVolumeKey);
-        SetMusicVolume(SFXSlider.value);
         SFXSlider.onValueChanged.AddListener(SetSFXVolume);
     }
 
@@ -161,7 +165,6 @@ public class VolumeUI : MonoBehaviour
         musicSlider.onValueChanged.RemoveListener(SetMusicVolume);
         SFXSlider.onValueChanged.RemoveListener(SetSFXVolume);
     }
-
 
     private void SetMusicVolume(float value)
     {
@@ -175,5 +178,4 @@ public class VolumeUI : MonoBehaviour
         _mixer.SetFloat(MIXER_SFX, Mathf.Log10(value) * 20);
     }
 }
-
 ```
