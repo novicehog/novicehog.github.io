@@ -48,6 +48,39 @@ Rigging이란 캐릭터 모델에게 `Bone(관절)`과 그에 따른 `Constraint
 
 ***
 애니메이터가 있는 위치에 Rig Buiduer 컴포넌트를 추가해줌.
+![리그빌더](https://github.com/novicehog/comments/assets/131991619/09dfb047-3c50-4be6-9af3-062a068e8cf6)
 
 
+유니티에서 본이 시각적으로 보이고 선택하기 쉽게 하기 위해서 `Bone Renderer`를 추가해줌.
+그리고 Bone Renderer의 트랜스폼으로 본들을 넣어줌.<br>
+본들을 직접 수동으로 넣어줘도 되지만 그냥 애니메이터가 있는 오브젝트 선택 후 <br>
+유니티 상단에 있는 도추창에서 Animation Rigging -> Bone Renderer Setup에서도 가능
+
+![Animation Rigging](https://github.com/novicehog/comments/assets/131991619/ab963c33-5a79-410d-826d-a4f8f6a1066b)
+<br>
+
+![컴포넌트창](https://github.com/novicehog/comments/assets/131991619/a32dfece-55b7-43f8-86df-e0f34a5bda13)
+<br>
+
+*** 
+이제 리그 빌더에 추가해줄 리그들을 생성할 차례이다.<br>
+위에서도 말했듯 리그는 Bone + Constraint 이다. 즉 해당되는 본들과 그 본들의 제약규칙을 정해주어야한다.<br>
+
+Rig를 추가하기 위해 먼저 애니메이터가 있는 게임 오브젝트의 자식으로 빈 오브젝트를 생성 후<br>
+Rig컴포넌트를 넣어준다. 
+
+![리그](https://github.com/novicehog/comments/assets/131991619/eedea219-f342-46dc-919b-d22a8d820cf2)
+<br>
+
+그 다음 다시 이 오브젝트 밑으로 빈 오브젝트를 생성한다. 그리고 유니티에서 제공하는 Constraint 컴포넌트들 중 하나를 선택하여 넣는다.
+
+나는 간단하게 multi-Aim Constraint를 넣어주었다. 이 기능은 머리가 바라보는 방향을 설정할 때 쓰기 좋다.<br>
+Constrained Object에 머리Bone을 넣어주었고 타겟으로 문을 넣어주었다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/d93c38dc-4517-48fa-ac5c-13b4e16a0610)
+<br>
+
+이제 리그가 있는 게임오브젝트를 리그 빌더의 Layer로 드래그해주면 적용된다.
+
+![추적](https://github.com/novicehog/comments/assets/131991619/44c45c9c-5584-47c9-acc1-2d775ba2cc29)
 
