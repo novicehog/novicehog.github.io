@@ -40,9 +40,14 @@ Rigging이란 캐릭터 모델에게 `Bone(관절)`과 그에 따른 `Constraint
 
 
 
-## 절차적 애니메이션 설치
+## 절차적 애니메이션 적용 방법
 우선은 패키지 매니저(Unity Registry)에서 Animation Rigging을 설치한다.
 ![패키지 다운](https://github.com/novicehog/comments/assets/131991619/72b4303e-09f7-4a01-ae47-d6b022cee4e8)
 <br>
+
+
+***
+애니메이터가 있는 위치에 Rig Buiduer 컴포넌트를 추가해줌.
+
 
 
