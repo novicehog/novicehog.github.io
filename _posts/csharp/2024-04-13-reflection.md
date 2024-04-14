@@ -283,3 +283,137 @@ static void Main(string[] args)
 | PropertyBuilder | 형식(클래스)의 프로퍼티를 정의함 |
 | TypeBuilder | 실행 중에 클래스를 정의하고 생성함 |
 
+이 클래스를 사용하는 요령은 다음과 같다.
+1. AssemblyBuilder를 이용해서 어셈블리를 만듬
+2. ModuleBuilder를 이용해서 `1`에서 생성한 어셈블리 안에 모듈을 만들어 넣음.
+3. `2`에서 생성한 모듈 안에 TypeBuilder로 클래스(형식)을 만들어 넣음
+4. `3`에서 생성한 클래스 안에 메소드(MethodBuilder 이용)나 프로퍼티(PropertyBuilder 이용)를 만들어 넣음.
+5. `4`에서 생성한 것이 메소드라면, ILGenerator를 이용해서 메소드 안에 CPU가 실행할 IL 명령들을 넣음.
+
+> 즉, `어셈블리` - `모듈` - `클래스` - `메소드` 또는 `프로퍼티`의 순서로 작업을 해야한다.
+
+
+새 형식을 만드는 것을 직접해보면 다음과 같다.<br>
+먼저 AssemblyBuilder 클래스를 이용해야 하지만 AssemblyBuilder는 스스로를 생성하는 생성자가 없다. <br>
+그래서 다른 `팩토리 클래스(객체의 생성을 담당하는 클래스를 일컫는 말)`의 도움을 받아야한다.<br>
+다음 예제와 같이 이 클래스의 `DefineDynamicAssembly()`메소드를 호출하면 AssemblyBuilder의 인스턴스를 만들 수 있음.
+
+```cs
+using System.Reflection.Emit;
+
+AssemblyBuilder newAssembly =
+    AssemblyBuilder.DefineDynamicAssembly(
+        // 일단은 어셈블리의 이름은 CalculatorAssembly로 함
+        new AssemblyName("CalcuatorAssembly"), AssemblyBuilderAccess.Run); 
+```
+<br>
+
+이 다음은 모듈을 만들 차례다.<br> 
+모듈은 어셈블리의 내부에 생성된다. <br>
+AssemblyBuilder는 동적 모듈을 생성하는 `DefineDynamicModule()`메소드를 가지고 있음.<br>
+모듈의 이름은 Calculator로 함.
+
+```cs
+ModuleBuilder newModule = newAssembly.DefineDynamicModule("Calculator");
+```
+<br>
+
+모듈을 만들었으면 클래스를 만들 차례이다.<br>
+클래스는 ModuleBuilder의 DefineType() 메소드를 이용해서 클래스를 생성함.<br>
+새로 만들 클래스의 이름은 Sum1To100임.
+
+```cs
+TypeBuilder newType = newModule.DefineType("Sum1To100");
+``` 
+<br>
+
+이제는 메소드를 만들 차례.
+TypeBuilder 클래스의 `DefineMethod()`를 호출해서 Calculate()라는 이름의 메소드를 만들 것이다.
+```cs
+MethodBuilder newMethod = newType.DefineMethod(
+    "Calculate",
+    MethodAttributes.Public,
+    typeof(int),            // 반환 형식
+    new Type[0]);           // 매개 변수
+```
+<br>
+
+방금 만든 메소드는 껍데기 뿐이니 메소드 안의 실행할 코드(IL 명령어)를 채워넣어야 한다.<br>
+이 작업은 `MethodeBuilder` 클래스의 `GetILGenerator()`메소드를 통해 얻을 수 있는 `ILGenerator` 객체를 통해서 이루어짐.
+
+```cs
+ILGenerator generator = newMethod.GetILGenerator();
+
+generator.Emit(OpCodes.Ldc_I4, 1);          // 32비트 정수(1)를 계산 스택에 넣음
+
+for(int i = 2; i <= 100; i++)
+{
+    generator.Emit(OpCodes .Ldc_I4, i);     // 32비트 정수(i)를 계산 스택에 넣음
+    generator.Emit(OpCodes.Add);            // 계산 후 계산 스택에 담겨 있는 두 개의 값을 꺼내서 더한 후,
+                                            // 그 결과를 다시 계산 스택에 넣음
+}
+
+generator.Emit(OpCodes.Ret);                // 계산 스택에 담겨 있는 값을 반환함.
+```
+<br>
+
+Calculate()메소드 안에 IL명령어도 모두 채웠으니 Sum1To100클래스를 CLR에 제출한다.<br>
+제출은 newType객체에 CreateType()메소드를 호출한다.
+
+```cs
+newType.CreateType();
+```
+
+이제는 완성된 형식의 인스턴스를 동적으로 생성해서 이용할 수 있다.
+```cs
+object sum1To100 = Activator.CreateInstance(newType);
+MethodInfo Calculate = sum1To100.GetType().GetMethod("Calculate");
+Console.WriteLine(Calculate.Invoke(sum1To100, null));
+// 출력 결과 5050
+```
+<br>
+
+전체 코드는 다음과 같다.
+```cs
+using System.Reflection;
+using System.Reflection.Emit;
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        AssemblyBuilder newAssembly =
+            AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName("CalcuatorAssembly"), AssemblyBuilderAccess.Run);
+
+        ModuleBuilder newModule = newAssembly.DefineDynamicModule("Calculator");
+
+        TypeBuilder newType = newModule.DefineType("Sum1To100");
+
+        MethodBuilder newMethod = newType.DefineMethod(
+            "Calculate",
+            MethodAttributes.Public,
+            typeof(int),            // 반환 형식
+            new Type[0]);           // 매개 변수
+
+        ILGenerator generator = newMethod.GetILGenerator();
+
+        generator.Emit(OpCodes.Ldc_I4, 1);          // 32비트 정수(1)를 계산 스택에 넣음
+
+        for(int i = 2; i <= 100; i++)
+        {
+            generator.Emit(OpCodes .Ldc_I4, i);     // 32비트 정수(i)를 계산 스택에 넣음
+            generator.Emit(OpCodes.Add);            // 계산 후 계산 스택에 담겨 있는 두 개의 값을 꺼내서 더한 후,
+                                                    // 그 결과를 다시 계산 스택에 넣음
+        }
+
+        generator.Emit(OpCodes.Ret);                // 계산 스택에 담겨 있는 값을 반환함.
+
+        newType.CreateType();
+
+        object sum1To100 = Activator.CreateInstance(newType);
+        MethodInfo Calculate = sum1To100.GetType().GetMethod("Calculate");
+        Console.WriteLine(Calculate.Invoke(sum1To100, null));
+    }
+}
+```
