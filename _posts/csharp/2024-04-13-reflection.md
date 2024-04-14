@@ -65,6 +65,7 @@ static void Main(string[] args)
 <br>
 
 자주 사용하는 메소드는 다음과 같다.
+
 | 메소드 | 반환 형식 | 설명 |
 | --- | --- | --- |
 | GetConstructors() | ConstructorInfo[] | 해당 형식의 모든 생성자 목록의 반환함 |
@@ -221,7 +222,7 @@ static void Main(string[] args)
 ```
 <br>
 
-PropertyInfo는 프로퍼티 뿐 아니라 인덱서[https://novicehog.github.io/c%20sharp/ch10-array-collection/#%EC%9D%B8%EB%8D%B1%EC%84%9C-indexer]의 정보도 담을 수 있는데,
+PropertyInfo는 프로퍼티 뿐 아니라 [인덱서](https://novicehog.github.io/c%20sharp/ch10-array-collection/#%EC%9D%B8%EB%8D%B1%EC%84%9C-indexer)의 정보도 담을 수 있는데,
 SetValue()나 GetValue() 메소드의 `마지막 인수`는 `인덱서의 인덱스`를 위해 사용된다.<br>
 여기서는 인덱서가 필요 없으므로 null을 할당한다.
 
