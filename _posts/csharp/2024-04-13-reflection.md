@@ -170,7 +170,8 @@ private static Method : private_Static_Method
 추가로 검색 옵션에 아무런 매개변수도 주지 않으면 public인 모두(instance, static)를 찾는다.
 
 
-## 리플렉션을 이용해서 객체 생성하기
+## 리플렉션을 이용해서 객체 생성과 활용
+### 객체 생성
 이번에는 리플렉션을 이용해 특정 형식의 `인스턴스를 만들고` `데이터를 할당`하며 `메소드를 호출`하는 방법에 대해 알아봄.
 
 리플렉션을 이용해 동적으로 인스턴스를 만들기 위해서는 `System.Activator` 클래스를 사용해야함.
@@ -188,7 +189,7 @@ object a = Activator.CreateInstance(typeof(int));
 List<int> list = Activator.CreateInstance<List<int>>();
 ```
 
-***
+### 프로퍼티 동적 할당
 인스턴스만 생성만 동적으로 할 수 있는것이 아닌 객체의 `프로퍼티에 값을 할당`하는 것도 동적으로 할 수 있다.<br>
 GetProperty()를 통해서 얻은 `PropertyInfo`클래스가 가지고 있는 `SetValue()`와 `GetValue()` 메소드를 통해 가능하다.
 
@@ -215,8 +216,43 @@ static void Main(string[] args)
     // 할당된 값 가져오기
     Console.WriteLine($"{name.GetValue(profile, null)} {phone.GetValue(profile, null)}");
 }
+// 출력 결과
+// 박찬호 123-1234
 ```
 <br>
 
 PropertyInfo는 프로퍼티 뿐 아니라 인덱서[https://novicehog.github.io/c%20sharp/ch10-array-collection/#%EC%9D%B8%EB%8D%B1%EC%84%9C-indexer]의 정보도 담을 수 있는데,
-SetValue()나 GetValue() 메소드의 `마지막 인수`는 `인덱서의 인덱스`를 위해 사용된다.
+SetValue()나 GetValue() 메소드의 `마지막 인수`는 `인덱서의 인덱스`를 위해 사용된다.<br>
+여기서는 인덱서가 필요 없으므로 null을 할당한다.
+
+### 메소드 호출
+메소드는 MethodInfo 클래스를 이용해서 호출할 수 있다.<br>
+MethodInfo 클래스에는 `Invoke()`라는 메소드가 있는데 이 메소드를 이용하면 동적으로 메소드를 호출할 수 있다.
+
+```cs
+public class Profile
+{
+    public string Name { get; set; }
+    public string Phone { get; set; }
+
+    public void Print()
+    {
+        Console.WriteLine($"{Name}, {Phone}");
+    }
+}
+static void Main(string[] args)
+{
+    Type type = typeof(Profile);
+    // 인스턴스 생성
+    Profile profile = Activator.CreateInstance(type) as Profile; 
+    if(profile == null) { return; }
+    profile.Name = "박찬호";
+    profile.Phone = "123-456";
+
+    // 메소드 찾기
+    MethodInfo method = type.GetMethod("Print");
+
+    // 메소드 호출
+    method.Invoke(profile, null);
+}
+```
