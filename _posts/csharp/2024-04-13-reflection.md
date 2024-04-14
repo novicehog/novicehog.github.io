@@ -257,3 +257,29 @@ static void Main(string[] args)
     method.Invoke(profile, null);
 }
 ```
+
+
+## 형식 내보내기
+위에서 다룬 내용들 만으로도 충분히 강력한 기능이지만, 추가적으로 프로그램 실행 중에 `새로운 형식을 만들어낼 수 있는 기능`까지도 제공한다.<br>
+동적으로 새로운 형식을 만드는 작업은 `System.Reflection.Emit 네임스페이스`에 있는 클래스들을 통해 이루어진다.<br>
+다음 표는 Emit 네임스페이스에서 제공하는 클래스 목록이다.
+
+
+| 클래스 | 설명 |
+| --- | --- |
+| AssemblyBuilder | 동적 어셈블리를 정의하고 나타낸다. |
+| ConstructorBuilder | 동적으로 만든 클래스의 생성자를 정의하고 나타냄 |
+| CustomAttributeBuilder | 사용자 정의 애트리뷰트를 만듬 |
+| EnumBuilder | 열거 형식을 정의하고 나타냄 |
+| EventBuilder | 클래스의 이벤트를 정의하고 나타냄 |
+| FieldBuilder | 필드를 정의하고 나타냄 |
+| GenericTypeParameterBuilder | 동적으로 정의된 형식(클래스)과 메소드를 위한 일반화 형식 매개변수를 정의하고 생성함 |
+| ILGenerator | MSIL(MicroSoft Intermediate Language) 명령어를 생성함 |
+| LocalBuilder | 메소드나 생성자 내의 지역 변수를 나타냄 |
+| MethodBuilder | 동적으로 만든 클래스의 메소드(또는 생성자)를 정의하고 나타냄 |
+| ModuleMuilder | 동적 어셈블리 내의 모듈을 정의하고 나타냄. |
+| OpCodes | ILGenerator 클래스의 멤버를 이용한 내보내기 작업에 사용할 MSIL 명령어의 필드 표현을 제공함 |
+| ParameterBuilder | 매개변수 정보를 생성하거나 결합함 |
+| PropertyBuilder | 형식(클래스)의 프로퍼티를 정의함 |
+| TypeBuilder | 실행 중에 클래스를 정의하고 생성함 |
+
