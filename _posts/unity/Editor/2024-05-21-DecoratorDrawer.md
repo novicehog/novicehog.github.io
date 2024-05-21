@@ -35,4 +35,24 @@ last_modified_at: 2024-05-21
 
 여기서 DecoratorDrawer를 통해 만들어진 부분은 다음과 같이 변수 자체가 아니라 변수 장식인 제목과 밑줄이다.
 
-<img width="159" alt="image" src="https://github.com/novicehog/comments/assets/131991619/e941f1de-8336-4d3f-99e0-9b31d14b2987">
+<img width="300" alt="image" src="https://github.com/novicehog/comments/assets/131991619/e941f1de-8336-4d3f-99e0-9b31d14b2987">
+
+## 사용 방법
+DecoratorDrawer를 사용하기 위해서는 먼저 `그릴 때 사용할 값`들이 필요하다.<br>
+이를 위해 수치 값들을 받아오기 위해 PropertyAttribute를 상속받는 클래스 하나가 필요하다.
+
+말로 하면 잘 와닿지 않는데, 그러면 유니티에서 기본적으로 제공하는 PropertyAttribute들을 보면 된다.
+
+```cs
+[Header("My Variables")]    // My Variables라는 값를 저장하여 그릴 때 제목으로 사용
+[Space(10)]                 // 10이라는 값을 저장하여 공간을 띄울 때 수치로 사용          
+public string myDescription;
+
+[Range(0, 100)]             // 0과 100이라는 값을 저장하여 범위를 그릴 때 수치를 사용
+public float myFloat;
+```
+<br>
+
+그래서 결론은 DecoratorDrawer를 사용하기 위해선 두 개의 스크립트를 생성하여야 한다.
+- PropertyAttribute : 데이터 값들을 저장
+- Decorator Drawer : PropertyAttribute를 통해 받은 값들을 토대로 GUI를 그림
