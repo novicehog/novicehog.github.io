@@ -99,7 +99,7 @@ public class UnderlineTitleDrawer : DecoratorDrawer
 <br>
 
 #### OnGUI함수와 GetHeight함수 오버라이딩
-첫 번째로 오버라이드할 함수 `OnGUI(Rect position)`는 어떻게 그릴지를 직접 작성한다.
+첫 번째로 오버라이드할 함수 `OnGUI(Rect position)`는 GUI를 어떻게 그릴지를 직접 작성한다.
 
 ```cs
 public override void OnGUI(Rect position)
@@ -123,4 +123,62 @@ public override void OnGUI(Rect position)
     // 회색 선을 그림
     EditorGUI.DrawRect(position, Color.gray);
 }
+```
+
+<br>
+<br>
+
+두 번째로 오버라이드할 함수 GetHeight는 내가 그런 GUI는 `이정도 높이를 가지고 있다를 반환`해준다.<br>
+이 프로퍼티를 다 그린 뒤 `다음 프로퍼티를 그리기 시작할 때 그려지는 위치를 구할 때 사용`된다.
+
+```cs
+// 이 함수를 통해서 이 프로퍼티는 이정도의 높이를 가지고 있다고 알림 그래서
+// 이 프로퍼티를 그린 다음, 다음에 그릴 프로퍼티가 그려지는 위치를 구할 때 사용됨
+public override float GetHeight()
+{
+    var attributeAsUnderlineTitle = attribute as UnderlineTitleAttribute;
+    // 기본 GUI 높이 + (기본 GUI 간격 * 2) 설정한 Attribute Space
+    return attributeAsUnderlineTitle.Space + EditorGUIUtility.singleLineHeight + (EditorGUIUtility.standardVerticalSpacing * 2);
+}
+```
+
+## 전체 코드
+```cs
+// Target으로 하는 Attribute의 Type
+[CustomPropertyDrawer(typeof(UnderlineTitleAttribute))]
+public class UnderlineTitleDrawer : DecoratorDrawer
+{
+    public override void OnGUI(Rect position)
+    {
+        // attribute에는 실제 attribute 객체가 들어있음
+        var attributeAsUnderlineTitle = attribute as UnderlineTitleAttribute;
+
+        // 들여쓰기가 적용된 포지션으로 변환
+        position = EditorGUI.IndentedRect(position);
+        // 유니티에서 기본 한 줄 높이
+        position.height = EditorGUIUtility.singleLineHeight;
+        // y축을 Attribute에서 설정한 Space만큼 내림
+        position.y += attributeAsUnderlineTitle.Space;
+
+        GUI.Label(position, attributeAsUnderlineTitle.Title, EditorStyles.boldLabel);
+
+        // 한줄 이동
+        position.y += EditorGUIUtility.singleLineHeight;
+        // 두께 1
+        position.height = 1f;
+        // 회색 선을 그림
+        EditorGUI.DrawRect(position, Color.gray);
+    }
+
+    // 이 함수를 통해서 이 프로퍼티는 이정도의 높이를 가지고 있다고 알림 그래서
+    // 이 프로퍼티를 그린 다음, 다음에 그릴 프로퍼티가 그려지는 위치를 구할 때 사용됨
+
+    public override float GetHeight()
+    {
+        var attributeAsUnderlineTitle = attribute as UnderlineTitleAttribute;
+        // 기본 GUI 높이 + (기본 GUI 간격 * 2) 설정한 Attribute Space
+        return attributeAsUnderlineTitle.Space + EditorGUIUtility.singleLineHeight + (EditorGUIUtility.standardVerticalSpacing * 2);
+    }
+}
+
 ```
