@@ -187,6 +187,8 @@ Human 객체 적용<br>
 Zombie 객체 적용<br>
 ![zombie](https://github.com/novicehog/comments/assets/131991619/c2aafff4-b79c-4d81-ad40-6da157bbf5c9)
 
+<br>
+
 #### 알고가야할 문제점
 이 기능 자체가 유니티에서 제공하는 기능은 아니기 떄문에 한 가지 문제점이 있다. <br>
 바로 SubclassSelector로 선언된 변수를 가지고 있는 다른 클래스 리스트에서 리스트 요소를 추가하면 얕은 복사가 일어난다는 것이다. <br>
