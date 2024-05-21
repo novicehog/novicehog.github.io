@@ -82,10 +82,13 @@ public class UnderlineTitleAttribute : PropertyAttribute
 ```
 
 ### DecoratorDrawer를 상속받는 UnderlineTitleDrawer
+DecoratorDrawer를 상속받아 직접 구현할 때는 2가지를 작성해주어야 한다.
+- Attribute의 Type을 인자로 받는 CustomPropertyDrawer Attribute를 클래스 위에 작성해준다.
+- OnGUI함수와 GetHeight함수 오버라이딩
 
+#### CustomPropertyDrawer 작성
+다음과 같이 클래스 위에 작성해주면 된다.
 
-
-DecoratorDrawer를 상속받아 직접 구현할 때 사용할 Attribute의 Type을 인자로 받는 CustomPropertyDrawer Attribute를 클래스 위에 작성해준다.
 ```cs
 [CustomPropertyDrawer(typeof(UnderlineTitleAttribute))]
 public class UnderlineTitleDrawer : DecoratorDrawer
@@ -93,8 +96,31 @@ public class UnderlineTitleDrawer : DecoratorDrawer
     ...
 }
 ```
+<br>
 
+#### OnGUI함수와 GetHeight함수 오버라이딩
+첫 번째로 오버라이드할 함수 `OnGUI(Rect position)`는 어떻게 그릴지를 직접 작성한다.
 
-그 다음 두 가지의 함수를 오버라이딩 하여야 한다.
+```cs
+public override void OnGUI(Rect position)
+{
+    // attribute에는 실제 attribute 객체가 들어있음
+    var attributeAsUnderlineTitle = attribute as UnderlineTitleAttribute;
 
-첫 번째는 `OnGUI(Rect position)` 함수로 직접 
+    // 들여쓰기가 적용된 포지션으로 변환
+    position = EditorGUI.IndentedRect(position);
+    // 유니티에서 기본 한 줄 높이
+    position.height = EditorGUIUtility.singleLineHeight;
+    // y축을 Attribute에서 설정한 Space만큼 내림
+    position.y += attributeAsUnderlineTitle.Space;
+
+    GUI.Label(position, attributeAsUnderlineTitle.Title, EditorStyles.boldLabel);
+
+    // 한줄 이동
+    position.y += EditorGUIUtility.singleLineHeight;
+    // 두께 1
+    position.height = 1f;
+    // 회색 선을 그림
+    EditorGUI.DrawRect(position, Color.gray);
+}
+```
