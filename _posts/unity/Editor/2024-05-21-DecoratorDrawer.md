@@ -200,3 +200,7 @@ public class Test : MonoBehaviour
 <br>
 
 ![image](https://github.com/novicehog/comments/assets/131991619/9c569660-5b09-4630-a384-f7d099e8351d)
+
+## 결론
+Decorator Drawer는 필수로 사용해야할 기능은 아니다.<br>
+그저 변수가 보여지는 모습을 그저 꾸며주기만 할 뿐이지만 나중에 인스펙터창의 정리가 필요하고 원하는 기능이 기본적으로 없다면 한 번 사용해볼만 한 기능이다.
