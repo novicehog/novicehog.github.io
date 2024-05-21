@@ -80,7 +80,52 @@ public class Test : MonoBehaviour
 
 위 코드에서는 추가적으로 `Entity`클래스를 상속받는 Human클래스와 Zombie클래스를 새로 작성했다.<br>
 그 뒤 `Entity`를 자료형으로 하는 `humanEntity변수`와 `zombieEntity변수`에 각각 `Human,Zombie객체를 할당`했다.<br>
-하지만 결과 사진을 보면 보이다 싶이 인스펙터창에서 나타나는 변수들은 Entity의 필드들만 나타나게 된다.
+하지만 결과 사진을 보면 보이다 싶이 인스펙터창에서 나타나는 변수들은 Entity의 필드들만 나타나게 된다.<br>
 
+이러한 문제를 해결하기 위해 사용하는 Attribute가 바로 SerializeReference이다.
+## SerializeReference란
+SerializeReference는 클래스의 다형성을 지원하는 직렬화 Attribute이다.<br>
+이를 사용하면 자료형을 기준으로 직렬화 하지 않고 할당된 객체를 기준으로 직렬화하게 된다.
+
+위의 예시코드를 다음과 같이 바꿨다.
+
+
+```cs
+
+[Serializable]
+public class Entity
+{
+    public string name;
+}
+
+public class Human : Entity
+{
+    public float Attack;
+}
+
+public class Zombie : Entity
+{
+    public float defense;
+}
+
+public class Test : MonoBehaviour
+{
+    // 수정된 부분
+    [SerializeReference]
+    Entity humanEntity = new Human();
+
+    // 수정된 부분
+    [SerializeReference]
+    Entity zombieEntity = new Zombie();
+}
+```
+<br>
+
+![image](https://github.com/novicehog/comments/assets/131991619/428500c9-d050-491c-8085-1690cc866ddd)
+
+<br>
+
+위의 사진을 보면 알 수 있듯 SerializeField에서 발생했던 문제가 해결된 모습을 볼 수 있다.
+SerializeReference는 위 처럼 할당된 객체를 기준으로 직렬화 하기 때문에 `상황에 맞게 다른 자식 객체를 할당`하여 `유동적인 구성`이 가능하도록 한다.
 
 
