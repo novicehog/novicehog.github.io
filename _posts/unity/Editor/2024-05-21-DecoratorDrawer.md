@@ -14,6 +14,9 @@ date: 2024-05-21
 last_modified_at: 2024-05-21
 
 ---
+이 글은 **`인프런`** [** 모듈식으로 개발하는 스킬 시스템**](https://www.inflearn.com/course/%EC%9C%A0%EB%8B%88%ED%8B%B0-%EB%AA%A8%EB%93%88%EC%8B%9D-%EC%8A%A4%ED%82%AC-%EC%8B%9C%EC%8A%A4%ED%85%9C)를 보고 공부한 내용을 정리한 글입니다.
+{: .notice--warning}
+
 
 ## DecoratorDrawer 란
 유니티에서는 Editor에서 보여지는 여러 요소들을 `커스터마이징` 할 수 있도록 도와준다. 
@@ -81,12 +84,12 @@ public class UnderlineTitleAttribute : PropertyAttribute
 }
 ```
 
-### DecoratorDrawer를 상속받는 UnderlineTitleDrawer
+### UnderlineTitleDrawer
 DecoratorDrawer를 상속받아 직접 구현할 때는 2가지를 작성해주어야 한다.
 - Attribute의 Type을 인자로 받는 CustomPropertyDrawer Attribute를 클래스 위에 작성해준다.
 - OnGUI함수와 GetHeight함수 오버라이딩
 
-#### CustomPropertyDrawer 작성
+#### CustomPropertyDrawer 
 다음과 같이 클래스 위에 작성해주면 된다.
 
 ```cs
@@ -98,7 +101,7 @@ public class UnderlineTitleDrawer : DecoratorDrawer
 ```
 <br>
 
-#### OnGUI함수와 GetHeight함수 오버라이딩
+#### OnGUI, GetHeight 
 첫 번째로 오버라이드할 함수 `OnGUI(Rect position)`는 GUI를 어떻게 그릴지를 직접 작성한다.
 
 ```cs
@@ -126,7 +129,7 @@ public override void OnGUI(Rect position)
 ```
 
 <br>
-<br>
+
 
 두 번째로 오버라이드할 함수 GetHeight는 내가 그런 GUI는 `이정도 높이를 가지고 있다를 반환`해준다.<br>
 이 프로퍼티를 다 그린 뒤 `다음 프로퍼티를 그리기 시작할 때 그려지는 위치를 구할 때 사용`된다.
@@ -141,6 +144,7 @@ public override float GetHeight()
     return attributeAsUnderlineTitle.Space + EditorGUIUtility.singleLineHeight + (EditorGUIUtility.standardVerticalSpacing * 2);
 }
 ```
+<br>
 
 ## 전체 코드
 ```cs
