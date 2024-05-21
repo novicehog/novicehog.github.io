@@ -174,12 +174,15 @@ public class Test : MonoBehaviour
 
 <br>
 
+적용된 모습 <br>
 ![sub](https://github.com/novicehog/comments/assets/131991619/f9f424a5-caf7-4409-98b4-8faa0caf5f80)
 
 <br>
 
+Human 객체 적용<br>
 ![huamn](https://github.com/novicehog/comments/assets/131991619/457c19df-b302-47f7-837b-e7ba8f55955c)
 
 <br>
 
+Zombie 객체 적용<br>
 ![zombie](https://github.com/novicehog/comments/assets/131991619/c2aafff4-b79c-4d81-ad40-6da157bbf5c9)
