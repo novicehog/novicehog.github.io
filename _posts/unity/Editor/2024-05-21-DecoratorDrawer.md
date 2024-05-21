@@ -180,5 +180,23 @@ public class UnderlineTitleDrawer : DecoratorDrawer
         return attributeAsUnderlineTitle.Space + EditorGUIUtility.singleLineHeight + (EditorGUIUtility.standardVerticalSpacing * 2);
     }
 }
-
 ```
+
+
+## 실제 사용하는 코드는 다음과 같다
+```cs
+public class Test : MonoBehaviour
+{
+    [UnderlineTitle(title: "나이")]
+    public int age;
+
+    [UnderlineTitle(title: "이름")]
+    public string myName;
+
+    [UnderlineTitle(title: "몸무게")]
+    public int weight;
+}
+```
+<br>
+
+![image](https://github.com/novicehog/comments/assets/131991619/9c569660-5b09-4630-a384-f7d099e8351d)
