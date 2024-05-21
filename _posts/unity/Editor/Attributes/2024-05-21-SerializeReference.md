@@ -14,7 +14,8 @@ date: 2024-05-22
 last_modified_at: 2024-05-22
 
 ---
-이 글은 **`인프런`** [** 모듈식으로 개발하는 스킬 시스템**](https://www.inflearn.com/course/%EC%9C%A0%EB%8B%88%ED%8B%B0-%EB%AA%A8%EB%93%88%EC%8B%9D-%EC%8A%A4%ED%82%AC-%EC%8B%9C%EC%8A%A4%ED%85%9C)를 보고 공부한 내용을 정리한 글입니다.
+
+이 글은 **`인프런`** [모듈식으로 개발하는 스킬 시스템](https://www.inflearn.com/course/%EC%9C%A0%EB%8B%88%ED%8B%B0-%EB%AA%A8%EB%93%88%EC%8B%9D-%EC%8A%A4%ED%82%AC-%EC%8B%9C%EC%8A%A4%ED%85%9C)를 보고 공부한 내용을 정리한 글입니다.
 {: .notice--warning}
 
 ## SerializeField란?
@@ -126,6 +127,12 @@ public class Test : MonoBehaviour
 <br>
 
 위의 사진을 보면 알 수 있듯 SerializeField에서 발생했던 문제가 해결된 모습을 볼 수 있다.
+
+## 결론
 SerializeReference는 위 처럼 할당된 객체를 기준으로 직렬화 하기 때문에 `상황에 맞게 다른 자식 객체를 할당`하여 `유동적인 구성`이 가능하도록 한다.
 
 
+## 추가적인 정보
+SerializeReference의 문제라고 한다면 인스펙터창에서 SerializeReference변수에 할당되는 객체를 바꾸는 기능은 따로 없다는 것이다.
+
+이러한 불편함을 해결해주는 다른 사람이 만든 코드가 있다. 이 코드는 유니티 공식 기능이 아니므로 유니티가 업데이트됨에 따라 작동하지 않을 수 있다.
