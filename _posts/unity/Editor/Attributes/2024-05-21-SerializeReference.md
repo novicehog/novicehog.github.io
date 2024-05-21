@@ -186,3 +186,27 @@ Human 객체 적용<br>
 
 Zombie 객체 적용<br>
 ![zombie](https://github.com/novicehog/comments/assets/131991619/c2aafff4-b79c-4d81-ad40-6da157bbf5c9)
+
+#### 알고가야할 문제점
+이 기능 자체가 유니티에서 제공하는 기능은 아니기 떄문에 한 가지 문제점이 있다. <br>
+바로 SubclassSelector로 선언된 변수를 가지고 있는 다른 클래스 리스트에서 리스트 요소를 추가하면 얕은 복사가 일어난다는 것이다. <br>
+말로 해서는 어려운데 바로 예시로 보면 다음과 같다.
+
+```cs
+[Serializable]
+public class GameInf
+{
+    [SerializeReference, SubclassSelector]
+    Entity entity;
+}
+
+public class Test : MonoBehaviour
+{
+    public GameInf[] game;
+}
+```
+<br>
+
+![subclassselecter문제](https://github.com/novicehog/comments/assets/131991619/167e1684-cdf8-4818-b4a3-baf076978ac8)
+
+이 경우에는 정말 따로 깊은 복사를 구현해주거나 subClassSelecter 변수를 재선택해줘야하는 번거로움이 있다.
