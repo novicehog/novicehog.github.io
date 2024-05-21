@@ -56,3 +56,45 @@ public float myFloat;
 그래서 결론은 DecoratorDrawer를 사용하기 위해선 두 개의 스크립트를 생성하여야 한다.
 - PropertyAttribute : 데이터 값들을 저장
 - Decorator Drawer : PropertyAttribute를 통해 받은 값들을 토대로 GUI를 그림
+
+
+그럼 이제 위에서 본것처럼 제목과 밑줄을 긋는 예시를 직접 만들어보면 다음과 같다.
+
+### PropertyAttribute를 상속받는 UnderlineTitleAttribute
+먼저 그릴 때 사용할 값들을 받아와야 한다. <br>
+여기서는 값을 두 가지를 받는다.
+- 제목
+- 띄울 공간
+
+```cs
+public class UnderlineTitleAttribute : PropertyAttribute
+{
+    public string Title { get; private set; }
+
+    public int Space { get; private set; }
+
+    public UnderlineTitleAttribute(string title, int space = 12)
+    {
+        Title = title;
+        Space = space;
+    }
+}
+```
+
+### DecoratorDrawer를 상속받는 UnderlineTitleDrawer
+
+
+
+DecoratorDrawer를 상속받아 직접 구현할 때 사용할 Attribute의 Type을 인자로 받는 CustomPropertyDrawer Attribute를 클래스 위에 작성해준다.
+```cs
+[CustomPropertyDrawer(typeof(UnderlineTitleAttribute))]
+public class UnderlineTitleDrawer : DecoratorDrawer
+{
+    ...
+}
+```
+
+
+그 다음 두 가지의 함수를 오버라이딩 하여야 한다.
+
+첫 번째는 `OnGUI(Rect position)` 함수로 직접 
