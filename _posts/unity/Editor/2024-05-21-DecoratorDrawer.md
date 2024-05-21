@@ -28,3 +28,11 @@ last_modified_at: 2024-05-21
 ![image](https://github.com/novicehog/comments/assets/131991619/9c569660-5b09-4630-a384-f7d099e8351d)
 <br>
 
+이 때 DecoratorDrawer를 통해 제목과 밑줄을 그어주는 기능을 커스터마이징하여 적용하면 다음과 같이 변수들이 보기좋게 된다.
+
+![image](https://github.com/novicehog/comments/assets/131991619/9e667a10-d201-415f-a6bd-72b3d68bc6c4)
+<br>
+
+여기서 DecoratorDrawer를 통해 만들어진 부분은 다음과 같이 변수 자체가 아니라 변수 장식인 제목과 밑줄이다.
+
+<img width="159" alt="image" src="https://github.com/novicehog/comments/assets/131991619/e941f1de-8336-4d3f-99e0-9b31d14b2987">
