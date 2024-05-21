@@ -54,12 +54,15 @@ public class Entity
     public string name;
 }
 
+
 // Entity를 상속받는 자식 클래스 2개를 정의
+[Serializable]
 public class Human : Entity
 {
     public float Attack;
 }
 
+[Serializable]
 public class Zombie : Entity
 {
     public float defense;
@@ -99,11 +102,13 @@ public class Entity
     public string name;
 }
 
+[Serializable]
 public class Human : Entity
 {
     public float Attack;
 }
 
+[Serializable]
 public class Zombie : Entity
 {
     public float defense;
@@ -133,6 +138,48 @@ SerializeReference는 위 처럼 할당된 객체를 기준으로 직렬화 하�
 
 
 ## 추가적인 정보
-SerializeReference의 문제라고 한다면 인스펙터창에서 SerializeReference변수에 할당되는 객체를 바꾸는 기능은 따로 없다는 것이다.
+SerializeReference의 불편한점이라고 한다면 인스펙터창에서 SerializeReference변수에 할당되는 객체를 바꾸는 기능은 따로 없다는 것이다.
 
-이러한 불편함을 해결해주는 다른 사람이 만든 코드가 있다. 이 코드는 유니티 공식 기능이 아니므로 유니티가 업데이트됨에 따라 작동하지 않을 수 있다.
+이러한 불편함을 해결해주는 [다른 사람이 만든 코드가 있다.](https://github.com/mackysoft/Unity-SerializeReferenceExtensions/releases) <br>
+이 코드는 유니티 공식 기능이 아니므로 유니티가 업데이트됨에 따라 작동하지 않을 수 있다.
+
+### 사용법
+패키지를 다운받아 유니티에 적용한 뒤, SerializeReference된 변수에 SubclassSelector Attribute를 추가해주면 된다.
+
+```cs
+[Serializable]
+public class Entity
+{
+    public string name;
+}
+
+[Serializable]
+public class Human : Entity
+{
+    public float Attack;
+}
+
+[Serializable]
+public class Zombie : Entity
+{
+    public float defense;
+}
+
+public class Test : MonoBehaviour
+{
+    [SerializeReference, SubclassSelector]
+    Entity Entity;
+}
+```
+
+<br>
+
+![sub](https://github.com/novicehog/comments/assets/131991619/f9f424a5-caf7-4409-98b4-8faa0caf5f80)
+
+<br>
+
+![huamn](https://github.com/novicehog/comments/assets/131991619/457c19df-b302-47f7-837b-e7ba8f55955c)
+
+<br>
+
+![zombie](https://github.com/novicehog/comments/assets/131991619/c2aafff4-b79c-4d81-ad40-6da157bbf5c9)
