@@ -142,3 +142,558 @@ public virtual bool OnReceiveMessage(int message, object data) => false;
 
 
 ### StateTransition
+다음으로는 State들간의 연결을 담당할 State Transition클래스이다.
+
+```cs
+public class StateTransition<EntityType>
+{
+    // Transition Command가 없음을 나타냄 (명령이 없다, nullable대신 사용하는 방법)
+    public const int kNullCommand = int.MinValue;
+
+    // Transition을 위한 조건 함수, 인자는 현재 State, 결과값은 전이 가능 여부
+    private Func<State<EntityType>, bool> transitionCondition;
+
+    // 현재 State에서 다시 현재State로 전이가 가능한지
+    public bool CanTransitionToSelf { get; private set; }
+    // 현재 State
+    public State<EntityType> FromState { get; private set; }
+    // 전이할 State
+    public State<EntityType> ToState { get; private set; }
+    // 전이 명령어
+    public int TransitionCommand { get; private set; }
+
+
+    /// 전이 가능 여부, 컨디션을 검사하여 컨디션이 없거나, 있다면 컨디션의 조건 함수를 실행하여 전이 가능 여부를 파악
+    public bool IsTransferable => transitionCondition == null || transitionCondition.Invoke(FromState);
+
+    public StateTransition(State<EntityType> fromState, State<EntityType> toState,
+        int transitionCommand,
+        Func<State<EntityType>, bool> transitionCondition,
+        bool canTransitionToSelf)
+    {
+        Debug.Assert(transitionCommand != kNullCommand || transitionCondition != null, 
+            "커맨드와 컨디션이 둘 다 null이 될 수 없음");
+
+        FromState = fromState;
+        ToState = toState;
+        TransitionCommand = transitionCommand;
+        this.transitionCondition = transitionCondition;
+        CanTransitionToSelf = canTransitionToSelf;
+    }
+}
+```
+<br>
+
+Transition는 특정한 조건을 만족하면 `특정 State -> 특정 State`로 또는 `아무 State -> 특정 State`로의 상태 전이가 일어난다.
+
+먼저 알아두어야 할 것은 전이 조건을 판별할 때 2가지를 확인한다는 것이다.<br>
+`전이가 가능한 조건의 Condition`과 `특정한 타이밍을 뜻하는 Command`가 있다.
+
+Condition과 Command가 모두 있는 Transition의 경우에는 특정한 타이밍(내가 원할 때 Command 신호를 보냄)에 전이 조건이 만족해야한다.(condition의 조건문이 True를 반환해야함)
+Command가 없을 경우엔 매 프레임 Condition을 체크.
+
+
+크게 어려운 내용은 없으므로 주석으로 대체하고 생성자만 보겠다.
+
+```cs
+public StateTransition(State<EntityType> fromState, State<EntityType> toState,
+    int transitionCommand,
+    Func<State<EntityType>, bool> transitionCondition,
+    bool canTransitionToSelf)
+{
+    Debug.Assert(transitionCommand != kNullCommand || transitionCondition != null, 
+        "커맨드와 컨디션이 둘 다 null이 될 수 없음");
+
+    FromState = fromState;
+    ToState = toState;
+    TransitionCommand = transitionCommand;
+    this.transitionCondition = transitionCondition;
+    CanTransitionToSelf = canTransitionToSelf;
+}
+```
+
+생성자에선 시작 State, 전이할 State, Command, Condition, 스스로에게 전이 가능 여부를 인자로 받아 대입한다. <br>
+이때 커맨드와 컨디션 둘다 존재하지 않는 경우는 의미가 없는 트랜지션이므로 Assert문으로 잘못됐음을 알린다.
+
+
+### StateMachine
+가장 중요하고 긴 StateMachine이다.
+
+코드 자체가 길기 때문에 중요한 부분만을 서술하려고한다.
+
+<details>
+<summary>StateMachine 스크립트</summary>
+<div markdown="1">       
+
+```cs
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.NetworkInformation;
+using UnityEngine;
+
+public abstract class StateMachine<EntityType>
+{
+    #region 정의, 변수, 프로퍼티들
+    // 대리자 Event 정의
+    public delegate void StateChangeHandler(
+        StateMachine<EntityType> stateMachine,
+        State<EntityType> newState,
+        State<EntityType> prevState,
+        int layer);
+
+    // State별로 여러개의 Transition을 가지고 있을 수 있기 때문에 State별로 한 번에 묶어서 관리하기 위한
+    // 내장 클래스
+    private class StateData
+    {
+        // State가 실행되는 Layer
+        public int Layer { get; private set; }
+        // State의 등록 순서
+        public int Priority { get; private set; }
+        // Data가 가진 State
+        public State<EntityType> State { get; private set; }
+        // State에서 다른 State로 이어진 Transition들
+        public List<StateTransition<EntityType>> Transitions { get; private set; } = new();
+
+        public StateData(int layer, int priority, State<EntityType> state) =>
+            (Layer, Priority, State) = (layer, priority, state);
+    }
+
+    // Layer별 가지고 있는 StateDatas(=Layer Dictionary), Dictionary의 key는 Value인 StateData가 가진 State의 Type
+    // 즉, State의 Type을 통해 해당 State가 가진 StateData를 찾아올 수 있음
+    // 여기서 말하는 Type이란 State를 상속하여 만든 State 자식 클래스들을 의미
+    // 예를 들어 State를 상속하는 RunState가 있다고 하면 
+    // stateDatasByLayer[0][RunState.GetType()]를 하므로 써 0번 레이어의 RunState의 부가정보를 담고있는 StateData를 가져옴
+    private readonly Dictionary<int, Dictionary<Type, StateData>> stateDatasByLayer = new();
+    // Layer별 Any Transitions(조건만 만족하면 언제든지 ToState로 전이되는 Transition)들을 가지고 있음
+    private readonly Dictionary<int, List<StateTransition<EntityType>>> anyTransitionsByLayer = new();
+
+    // Layer별로 현재 실행중인 State의 StateData
+    private readonly Dictionary<int, StateData> currentStateDatasByLayer = new();
+
+    // StateMachine에 존재하는 Layer들, 중복X 자동정렬O 를 위해 SortedSet이용
+    private readonly SortedSet<int> layers = new();
+
+    // StateMachine의 소유주
+    public EntityType Owner { get; private set; }
+
+    public event StateChangeHandler onStateChanged;
+    #endregion
+
+    public void Setup(EntityType owner)
+    {
+        Debug.Assert(owner != null, $"StateMachine<{typeof(EntityType).Name}>:: Setup - owner는 null이 될 수 없음");
+
+        Owner = owner;
+
+        // 자식 StateMachine클래스에서 오버라이드해서 사용할 함수들
+        AddStates();
+        MakeTransitions();
+        SetupLayers();
+    }
+
+    /// <summary>
+    /// 설정된 상태들을 기준으로 State를 실행시킬 Layer들을 만들어주고,
+    /// Layer별로 가장 먼저 등록된 상태들을 실행시킴
+    /// </summary>
+    public void SetupLayers()
+    { 
+        foreach ((int layer, var stateDatasByType) in stateDatasByLayer)
+        {
+            // State를 실행시킬 Layer를 만들어줌
+            currentStateDatasByLayer[layer] = null;
+
+            // 우선 순위가 가장 높은 StateData를 찾아옴
+            var firstStateData = stateDatasByType.Values.First(x => x.Priority == 0);
+            // 찾아온 StateData의 State를 현재 Layer의Current State로 설정해줌
+            ChangeState(firstStateData);
+        }
+    }
+
+    /// <summary>
+    /// 현재 실행중인 CurrentStateData를 변경하는 함수
+    ///  Enter함수와 Exit함수는 이곳에서 관리
+    /// </summary>
+    /// <param name="newStateData">전이할 상태</param>
+    private void ChangeState(StateData newStateData)
+    {
+        // Layer에 맞는 현재 실행중인 CurrentStateData를 가져옴
+        var prevState = currentStateDatasByLayer[newStateData.Layer];
+
+        // 처음 상태가 시작될 땐 실행중인 상대가 없으므로 ?.접근연산자를 사용
+        prevState?.State.Exit();
+
+        // 인자로 받은 상태로 전이해줌
+        currentStateDatasByLayer[newStateData.Layer] = newStateData;
+        newStateData.State.Enter();
+
+        onStateChanged?.Invoke(this, newStateData.State, prevState.State, newStateData.Layer);
+    }
+
+    /// <summary>
+    /// State와 Layer를 통해 전이하는 ChangeState 오버로딩함수
+    /// </summary>
+    private void ChangeState(State<EntityType> newState, int layer)
+    {
+        var newStateData = stateDatasByLayer[layer][newState.GetType()];
+        ChangeState(newStateData);
+    }
+
+    /// <summary>
+    /// 전이 시도
+    /// </summary>
+    /// <returns>전이 성공 여부 반환</returns>
+    private bool TryTransition(IReadOnlyList<StateTransition<EntityType>> transitions, int layer)
+    {
+        foreach (var transition in transitions)
+        {
+            // 여기서 continue는 전이하지 않겠다를 의미
+            // 첫 조건 커맨드가 존재하면 true, 두 번째 조건 컨디션이 없거나 True 반환
+            // 즉, 커맨드가 있다면 여기서 말고 커맨드가 왔을 때 따로 처리하므로 여기서는 처리하지 않고 continue로 넘어가고,
+            // 커맨드가 없다면 전이조건을 확인해서 전이할 수 없을 경우 continue로 넘어감
+            if (transition.TransitionCommand != StateTransition<EntityType>.kNullCommand || !transition.IsTransferable)
+                continue;
+
+            // 스스로에게 전이 불가능할 때 스스로에게 전이하려고 하면 continue
+            if (!transition.CanTransitionToSelf && currentStateDatasByLayer[layer].State == transition.ToState)
+                continue;
+
+            // 모든 조건을 만족한다면 ToState로 전이
+            ChangeState(transition.ToState, layer);
+            return true;
+        }
+        // 전이 실패
+        return false;
+    }
+
+    /// <summary>
+    /// 이 함수를 매 프레임 호출하여 이 곳에서 Condition을 통한 State 전이와 State의 Update함수를 실행
+    /// </summary>
+    public void Update()
+    {
+        foreach (var layer in layers)
+        {
+            // 현재 State의 StateData를 가져옴
+            var currentStateData = currentStateDatasByLayer[layer];
+
+            // 현재 Layer의 AnyTrasitions들을 가져옴
+            bool hasAnyTransitions = anyTransitionsByLayer.TryGetValue(layer, out var anyTransitions);
+
+            // AnyTransition으로 먼저 전이 시도를 해보고 안된다면 현재 StateData의 Transition을 통해 전이를 시도함
+            // 즉, AnyTransition이 일반적인 Transition보다 우선됨
+            // 전이에 성공했다면 다음 레이어에서 똑같은 작업 반복
+            if ((hasAnyTransitions && TryTransition(anyTransitions, layer)) ||
+                TryTransition(currentStateData.Transitions, layer))
+                continue;
+
+            // 전이에 실패한다면 현재 State의 Update함수를 실행
+            currentStateData.State.Update();
+        }
+    }
+
+
+
+    public void AddStates<T>(int layer = 0) where T : State<EntityType>
+    {
+        // Set이므로 이미 존재한다면 추가하지 않음
+        layers.Add(layer);
+
+        // Generic타입이므로 Activator.CreateInstance<T>()를 통해서 객체를 생성함
+        var newState = Activator.CreateInstance<T>();
+        newState.Setup(this, Owner, layer);
+
+        // 아직 stateDatasByLayer에 추가되지 않은 Layer라면 Layer를 생성
+        if(!stateDatasByLayer.ContainsKey(layer))
+        {
+            // Layer의 StateDate 목록인 Dictionary<Type, StateData> 생성
+            stateDatasByLayer[layer] = new();
+            // Layer의 AnyTransitions 목록인 List<StateTransition<EntityType>> 생성
+            anyTransitionsByLayer[layer] = new();
+        }
+
+        Debug.Assert(!stateDatasByLayer[layer].ContainsKey(typeof(T)),
+            $"StateMachine::AddState<{typeof(T).Name}> - 이미 상태가 존재합니다.");
+
+
+        var stateDatasByType = stateDatasByLayer[layer];
+        // Dictionary<Type, StateData>에 저장함
+        stateDatasByType[typeof(T)] = new StateData(layer, stateDatasByType.Count, newState);
+    }
+
+
+    /// <summary>
+    /// Transition을 생성하는 함수
+    /// </summary>
+    public void MakeTransitions<FromStateType, ToStateType>(int transitionCommand,
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0) 
+        where FromStateType : State<EntityType>
+        where ToStateType : State<EntityType>
+    {
+        var stateDatas = stateDatasByLayer[layer];
+        // StateDatas에서 FromStateType의 State를 가진 StateData를 찾아옴
+        var fromStateData = stateDatas[typeof(FromStateType)];
+        // StateDatas에서 ToStateType의 State를 가진 StateData를 찾아옴
+        var toStateData = stateDatas[typeof(ToStateType)];
+
+        // 인자와 찾아온 Data를 가지고 Transition생성
+        // AnyTransition이 아닌 일반 Transition은 canTransitionToSelf 인자가 무조건 True
+        var newTransition = new StateTransition<EntityType>(fromStateData.State, toStateData.State,
+            transitionCommand, transitionCondition, true);
+
+        // 생성한 Transtion을 FromStateData의 Transition으로 추가
+        fromStateData.Transitions.Add(newTransition);
+    }
+
+    #region MakeTranstions
+    // MakeTranstion함수의 Enum Command 버전
+    // Enum형으로 받은 Commnad를 Int로 변환하여 위의 함수 호출
+    public void MakeTransitions<FromStateType, ToStateType>(Enum transitionCommand,
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0)
+        where FromStateType : State<EntityType>
+        where ToStateType : State<EntityType>
+        => MakeTransitions<FromStateType, ToStateType>(Convert.ToInt32(transitionCommand), transitionCondition, layer);
+
+    // Command 인자가 없는 버전
+    // null 커맨드를 넣어 최상단 MakeTranstion 호출
+    public void MakeTransitions<FromStateType, ToStateType>(
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0)
+        where FromStateType : State<EntityType>
+        where ToStateType : State<EntityType>
+        => MakeTransitions<FromStateType, ToStateType>(StateTransition<EntityType>.kNullCommand, transitionCondition, layer);
+
+    // Condition이 없는 버전
+    public void MakeTransitions<FromStateType, ToStateType>(int transitionCommand,
+        int layer = 0)
+        where FromStateType : State<EntityType>
+        where ToStateType : State<EntityType>
+        => MakeTransitions<FromStateType, ToStateType>(transitionCommand, null, layer);
+
+    // Condition이 없는 Enum Command 버전
+    public void MakeTransitions<FromStateType, ToStateType>(Enum transitionCommand,
+        int layer = 0)
+        where FromStateType : State<EntityType>
+        where ToStateType : State<EntityType>
+        => MakeTransitions<FromStateType, ToStateType>(transitionCommand, null, layer);
+
+    #endregion
+    #region MakeAnyTransitions
+    /// <summary>
+    /// AnyTransition을 만듬
+    /// </summary>
+    /// <param name="canTransitionToSelf">스스로에게 전이 가능한지 여부</param>
+    public void MakeAnyTransitions<ToStateType>(int transitionCommand,
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0, bool canTransitionToSelf = false)
+        where ToStateType : State<EntityType>
+    {
+        var stateDatasByType = stateDatasByLayer[layer];
+        // StateDats에서 ToStateType에 해당하는 State를 가진 StateData를 찾아와서 State를 가져옴
+        var state = stateDatasByType[typeof(ToStateType)].State;
+        // Transition 생성, 언제든지 조건만 맞으면 전이할 것이므로 FromState는 존재하지 않음
+        var newTransition = new StateTransition<EntityType>(null, state, transitionCommand, transitionCondition, canTransitionToSelf);
+        // Layer의 AnyTransition으로 추가
+        anyTransitionsByLayer[layer].Add(newTransition);
+    }
+
+    // Command Enum버전
+    public void MakeAnyTransitions<ToStateType>(Enum transitionCommand,
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0, bool canTransitionToSelf = false)
+        where ToStateType : State<EntityType>
+        => MakeAnyTransitions<ToStateType>(Convert.ToInt32(transitionCommand),transitionCondition,layer,canTransitionToSelf);
+
+    // Command 없는 버전
+    public void MakeAnyTransitions<ToStateType>(
+        Func<State<EntityType>, bool> transitionCondition, int layer = 0, bool canTransitionToSelf = false)
+        where ToStateType : State<EntityType>
+        => MakeAnyTransitions<ToStateType>(StateTransition<EntityType>.kNullCommand, transitionCondition, layer, canTransitionToSelf);
+
+    // Condition 없으면서 Command Enum 버전
+    public void MakeAnyTransitions<ToStateType>(int transitionCommand,
+        int layer = 0, bool canTransitionToSelf = false)
+        where ToStateType : State<EntityType>
+        => MakeAnyTransitions<ToStateType>(transitionCommand, null, layer, canTransitionToSelf);
+
+    // Condition 없으면서 Command Enum 버전
+    public void MakeAnyTransitions<ToStateType>(Enum transitionCommand,
+        int layer = 0, bool canTransitionToSelf = false)
+        where ToStateType : State<EntityType>
+        => MakeAnyTransitions<ToStateType>(transitionCommand, null, layer, canTransitionToSelf);
+
+
+    #endregion
+    #region ExecuteCommand
+    /// <summary>
+    /// Command를 실행하는 함수, AniTransition들을 검사하여 해당 Command를 가지며 Condition을 만족하는 Transition을 검색
+    /// AniTransition에서 못찾으면 현재 State의 Transition들을 대상으로 똑같이 검사
+    /// </summary>
+    /// <returns>커맨드를 호출하여 상태 전이에 성공하면 True</returns>
+    public bool ExecuteCommand(int transitionCommand, int layer)
+    {
+        // Layer에 해당하는 AnyTransition들을 검사하여 커맨드와 컨디션을 모두 만족하는 트랜지션을 찾음
+        var transition = anyTransitionsByLayer[layer].Find(x =>
+            x.TransitionCommand == transitionCommand && x.IsTransferable);
+
+        // AnyTransition에서 못찾았다면 현재 실행중인 State의 Transition에서 검사함
+        transition ??= currentStateDatasByLayer[layer].Transitions.Find(x =>
+            x.TransitionCommand == transitionCommand && x.IsTransferable);
+
+        // 적합한 Transition을 못찾았다면 false리턴
+        if (transition == null)
+            return false;
+
+        // 찾았다면 상태 전환
+        ChangeState(transition.ToState, layer);
+        return true;
+    }
+
+    // Enum버전
+    public bool ExecuteCommand(Enum transitionCommand, int layer) 
+        => ExecuteCommand(Convert.ToInt32(transitionCommand),layer);
+
+    /// <summary>
+    /// 모든 레이어를 대상으로 Command 실행
+    /// </summary>
+    /// <param name="transitionCommand">하나의 Layer라도 전이에 성공하면 True</param>
+    /// <returns></returns>
+
+    public bool ExecuteCommand(int transitionCommand)
+    {
+        bool isSuccess = false;
+
+        foreach (int layer in layers)
+        {
+            // 상태 전이에 성공하면 isSuccess를 True로 전환
+            if (ExecuteCommand(transitionCommand, layer))
+                isSuccess = true;
+        }
+
+        return isSuccess;
+    }
+
+    #endregion
+    #region SendMessage
+    /// <summary>
+    /// 현재 실행중인 상태에 메세지를 보냄
+    /// </summary>
+    /// <param name="message">메세지</param>
+    /// <param name="layer">메세지를 보낼 상태가 있는 레이어</param>
+    /// <param name="extraData">메세지와 함께 보낼 데이터, 데이터는 어떠한 형태도(투플이든, 리스트든) 받을 수 있도록 object형</param>
+    /// <returns>메세지를 올바르게 수신하였다면 True 반환</returns>
+    public bool SendMessage(int message, int layer, object extraData = null)
+        => currentStateDatasByLayer[layer].State.OnReceiveMessage(message, extraData);
+    // Command Enum버전
+    public bool SendMessage(Enum message, int layer, object extraData = null)
+    => SendMessage(Convert.ToInt32(message),layer, extraData);
+
+    // 모든 Layer의 현재 실행중인 State를 대상으로 SendMessage 함수 실행
+    public bool SendMessage(int message, object extraData = null)
+    {
+        bool isSuccess = false;
+        foreach(int layer in layers)
+        {
+            //f(currentStateDatasByLayer[layer].State.OnReceiveMessage(message,extraData))
+            if (SendMessage(message, layer, extraData))
+                isSuccess = true;
+        }
+        return isSuccess;
+    }
+
+    public bool SendMessage(Enum message, object extraData = null)
+        => SendMessage(Convert.ToInt32(message), extraData);
+    #endregion
+    #region 그 외 State 관련 함수들
+    /// <summary>
+    /// 모든 Layer를 대상으로 현재 실행중인 State 중 T Type의 State가 있는지 확인
+    /// 예를 들어 State를 상속받은 RunState가 있다고 한다면 RunState가 현재 실행중인 State인지 확인
+    /// </summary>
+    /// <typeparam name="T">검사할 타입</typeparam>
+    /// <returns>검사한 타입이 실행중인 State라면 True 반환</returns>
+    public bool IsInState<T>() where T : State<EntityType>
+    {
+        foreach ((_, StateData data) in currentStateDatasByLayer)
+        {
+            if (data.State.GetType() == typeof(T))
+                return true;
+        }
+        return false;
+    }
+
+    // 특정 Layer를 대상으로 현재 실행중인 State가 T Type의 State인지 확인
+    public bool IsInState<T>(int layer) where T : State<EntityType>
+        => currentStateDatasByLayer[layer].State.GetType() == typeof(T);
+    
+    /// <summary>
+    /// 특정 Layer의 현재 실행중인 State 반환
+    /// </summary>
+    /// <returns></returns>
+    public State<EntityType> GetCurrentState(int layer = 0) => currentStateDatasByLayer[layer].State;
+
+    /// <summary>
+    /// 특정 Layer의 현재 실행중인 State의 Type 반환
+    /// </summary>
+    /// <param name="layer"></param>
+    /// <returns></returns>
+    public Type GetCurrentStateType(int layer = 0) => GetCurrentState(layer).GetType();
+    #endregion
+
+
+    // 자식 class에서 정의할 State 추가 함수
+    // 이 함수에서 AddState<T> 함수를 사용해 State를 추가해주면 됨
+    protected virtual void AddStates() { }
+
+    // 자식 class에서 정의할 Transition 생성 함수
+    // 이 함수에서 MakeTransition 함수를 사용해 Transition을 만들어주면 됨
+    protected virtual void MakeTransitions() { }
+}
+
+```
+
+</div>
+</details>
+
+
+
+먼저 StateDate 내장 클래스가 있다.
+이는 State 자체만을 이용하기에는 제한되는 부분이 많아서 StateData라는 내장 클래스를 만들어 State들을 관리한다.
+Transition의 경우 `특정 State -> 특정 State` 의 Transition의 경우에는 `StateData클래스에서 리스트로 저장`하여 가지고 있고,
+`아무 State -> 특정 State` 의 `AnyTransition`의 경우에는 `StateMachine이 리스트로 가지고`있는다.
+
+```cs
+// State별로 여러개의 Transition을 가지고 있을 수 있기 때문에 State별로 한 번에 묶어서 관리하기 위한
+// 내장 클래스
+private class StateData
+{
+    // State가 실행되는 Layer
+    public int Layer { get; private set; }
+    // State의 등록 순서 (가장 먼저 등록된 State가 시작 State)
+    public int Priority { get; private set; }
+    // Data가 가진 State
+    public State<EntityType> State { get; private set; }
+    // State에서 다른 State로 이어진 Transition들
+    public List<StateTransition<EntityType>> Transitions { get; private set; } = new();
+
+    public StateData(int layer, int priority, State<EntityType> state) =>
+        (Layer, Priority, State) = (layer, priority, state);
+}
+```
+<br>
+
+
+StateMachine에서 State와 Transition 관리에 필요한 자료구조들이 있다.
+
+```cs
+// Layer별 가지고 있는 StateDatas(=Layer Dictionary), Dictionary의 key는 Value인 StateData가 가진 State의 Type
+// 즉, State의 Type을 통해 해당 State가 가진 StateData를 찾아올 수 있음
+// 여기서 말하는 Type이란 State를 상속하여 만든 State 자식 클래스들을 의미
+// 예를 들어 State를 상속하는 RunState가 있다고 하면 
+// stateDatasByLayer[0][RunState.GetType()]를 하므로 써 0번 레이어의 RunState의 부가정보를 담고있는 StateData를 가져옴
+private readonly Dictionary<int, Dictionary<Type, StateData>> stateDatasByLayer = new();
+// Layer별 Any Transitions(조건만 만족하면 언제든지 ToState로 전이되는 Transition)들을 가지고 있음
+private readonly Dictionary<int, List<StateTransition<EntityType>>> anyTransitionsByLayer = new();
+
+// Layer별로 현재 실행중인 State의 StateData
+private readonly Dictionary<int, StateData> currentStateDatasByLayer = new();
+
+// StateMachine에 존재하는 Layer들, 중복X 자동정렬O 를 위해 SortedSet이용
+private readonly SortedSet<int> layers = new();
+```
