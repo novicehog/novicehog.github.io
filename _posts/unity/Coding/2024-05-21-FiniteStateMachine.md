@@ -653,10 +653,10 @@ public abstract class StateMachine<EntityType>
 
 
 
-먼저 StateDate 내장 클래스가 있다.
-이는 State 자체만을 이용하기에는 제한되는 부분이 많아서 StateData라는 내장 클래스를 만들어 State들을 관리한다.
-Transition의 경우 `특정 State -> 특정 State` 의 Transition의 경우에는 `StateData클래스에서 리스트로 저장`하여 가지고 있고,
-`아무 State -> 특정 State` 의 `AnyTransition`의 경우에는 `StateMachine이 리스트로 가지고`있는다.
+먼저 StateDate 내장 클래스가 있다.<br>
+이는 State 자체만을 이용하기에는 제한되는 부분이 많아서 StateData라는 내장 클래스를 만들어 State들을 관리한다.<br>
+Transition의 경우 `특정 State -> 특정 State` 의 Transition의 경우에는 `StateData클래스에서 리스트로 저장`하여 가지고 있고,<br>
+`아무 State -> 특정 State` 의 `AnyTransition`의 경우에는 `StateMachine이 리스트로 가지고`있는다.<br>
 
 ```cs
 // State별로 여러개의 Transition을 가지고 있을 수 있기 때문에 State별로 한 번에 묶어서 관리하기 위한
@@ -911,3 +911,11 @@ public class Entity : MonoBehaviour
 실행해보면 Shift키를 누르고 있을 경우 Entity의 speed가 바뀌게 되고 그로인해 상태가 변환되어 각 상태들의 Enter, Update, Exit함수가 실행됨을 볼 수 있다.
 
 ![state머신 테스트](https://github.com/novicehog/comments/assets/131991619/038e2e8c-ea72-4023-8a6c-749c1e548091)
+
+
+## 마무리
+FSM를 이용하는 가장 큰 이유는 아무래도 객체의 관리가 쉬워진다는 장점이 있다.<br>
+꼭 게임 내의 AI를 구현하는 것 외에도 캐릭터의 상태(주문을 시전중, cc기에 맞음)를 여러개로 두고 그에 맞는 처리를 할 수 있으며, <br>
+Skill또한 StateMachine을 통해 구현하면 좀더 수월한 관리가 가능해진다. <br>
+
+개념적으로 좀 어려울 수 있지만 여러 곳에서 두루두루 사용할 수 있는 방법중 하나니까 꾸준히 사용해보며 감을 익히는 것이 중요할 것 같다.
