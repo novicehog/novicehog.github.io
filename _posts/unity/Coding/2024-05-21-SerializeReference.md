@@ -697,3 +697,116 @@ private readonly Dictionary<int, StateData> currentStateDatasByLayer = new();
 // StateMachine에 존재하는 Layer들, 중복X 자동정렬O 를 위해 SortedSet이용
 private readonly SortedSet<int> layers = new();
 ```
+
+<br>
+
+
+
+매 프레임 전이 조건을 확인하는 TryTransition 함수는 다음과 같다. <br>
+Command가 있을 경우에는 이곳이 아닌 ExcecuteCommand가 호출되는 곳에서 전이 조건을 확인하기 때문에 <br>
+TryTransition에서는 `Command가 없는 경우의 Condition만을 검사`한다.
+
+```cs
+private bool TryTransition(IReadOnlyList<StateTransition<EntityType>> transitions, int layer)
+{
+    foreach (var transition in transitions)
+    {
+        // 여기서 continue는 전이하지 않겠다를 의미
+        // 첫 조건 커맨드가 존재하면 true, 두 번째 조건 컨디션이 없거나 True 반환
+        // 즉, 커맨드가 있다면 여기서 말고 커맨드가 왔을 때 따로 처리하므로 여기서는 처리하지 않고 continue로 넘어가고,
+        // 커맨드가 없다면 전이조건을 확인해서 전이할 수 없을 경우 continue로 넘어감
+        if (transition.TransitionCommand != StateTransition<EntityType>.kNullCommand || !transition.IsTransferable)
+            continue;
+
+        // 스스로에게 전이 불가능할 때 스스로에게 전이하려고 하면 continue
+        if (!transition.CanTransitionToSelf && currentStateDatasByLayer[layer].State == transition.ToState)
+            continue;
+
+        // 모든 조건을 만족한다면 ToState로 전이
+        ChangeState(transition.ToState, layer);
+        return true;
+    }
+    // 전이 실패
+    return false;
+}
+```
+<br>
+
+command가 있는 경우 전이조건을 검사하는 함수는 다음과 같다.
+```cs
+public bool ExecuteCommand(int transitionCommand, int layer)
+{
+    // Layer에 해당하는 AnyTransition들을 검사하여 커맨드와 컨디션을 모두 만족하는 트랜지션을 찾음
+    var transition = anyTransitionsByLayer[layer].Find(x =>
+        x.TransitionCommand == transitionCommand && x.IsTransferable);
+
+    // AnyTransition에서 못찾았다면 현재 실행중인 State의 Transition에서 검사함
+    transition ??= currentStateDatasByLayer[layer].Transitions.Find(x =>
+        x.TransitionCommand == transitionCommand && x.IsTransferable);
+
+    // 적합한 Transition을 못찾았다면 false리턴
+    if (transition == null)
+        return false;
+
+    // 찾았다면 상태 전환
+    ChangeState(transition.ToState, layer);
+    return true;
+}
+```
+<br>
+
+조건이 올바르다면 ChangeState함수를 실행한다.
+State에서 만들었던 Enter, Exit등의 함수는 이곳에서 호출된다.
+
+```cs
+private void ChangeState(StateData newStateData)
+{
+    // Layer에 맞는 현재 실행중인 CurrentStateData를 가져옴
+    var prevState = currentStateDatasByLayer[newStateData.Layer];
+
+    // 처음 상태가 시작될 땐 실행중인 상대가 없으므로 ?.접근연산자를 사용
+    prevState?.State.Exit();
+
+    // 인자로 받은 상태로 전이해줌
+    currentStateDatasByLayer[newStateData.Layer] = newStateData;
+    newStateData.State.Enter();
+
+    onStateChanged?.Invoke(this, newStateData.State, prevState.State, newStateData.Layer);
+}
+
+/// State와 Layer를 통해 전이하는 ChangeState 오버로딩함수
+private void ChangeState(State<EntityType> newState, int layer)
+{
+    var newStateData = stateDatasByLayer[layer][newState.GetType()];
+    ChangeState(newStateData);
+}
+```
+<br>
+
+
+마지막으로 Update문에서 전이조건을 확인하고 전이조건을 만족하지 못할 때, 현재 State의 Update를 호출한다.
+
+```cs
+/// 이 함수를 매 프레임 호출하여 이 곳에서 Condition을 통한 State 전이와 State의 Update함수를 실행
+public void Update()
+{
+    foreach (var layer in layers)
+    {
+        // 현재 State의 StateData를 가져옴
+        var currentStateData = currentStateDatasByLayer[layer];
+
+        // 현재 Layer의 AnyTrasitions들을 가져옴
+        bool hasAnyTransitions = anyTransitionsByLayer.TryGetValue(layer, out var anyTransitions);
+
+        // AnyTransition으로 먼저 전이 시도를 해보고 안된다면 현재 StateData의 Transition을 통해 전이를 시도함
+        // 즉, AnyTransition이 일반적인 Transition보다 우선됨
+        // 전이에 성공했다면 다음 레이어에서 똑같은 작업 반복
+        if ((hasAnyTransitions && TryTransition(anyTransitions, layer)) ||
+            TryTransition(currentStateData.Transitions, layer))
+            continue;
+
+        // 전이에 실패한다면 현재 State의 Update함수를 실행
+        currentStateData.State.Update();
+    }
+}
+```
