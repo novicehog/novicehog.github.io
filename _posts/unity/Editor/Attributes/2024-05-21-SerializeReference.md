@@ -95,7 +95,6 @@ SerializeReference는 클래스의 다형성을 지원하는 직렬화 Attribute
 
 
 ```cs
-
 [Serializable]
 public class Entity
 {
@@ -191,7 +190,7 @@ Zombie 객체 적용<br>
 
 #### 알고가야할 문제점
 이 기능 자체가 유니티에서 제공하는 기능은 아니기 떄문에 한 가지 문제점이 있다. <br>
-바로 SubclassSelector로 선언된 변수를 가지고 있는 다른 클래스 리스트에서 리스트 요소를 추가하면 얕은 복사가 일어난다는 것이다. <br>
+바로 SubclassSelector로 선언된 변수를 가지고 있는 다른 클래스 리스트에서 리스트 요소를 추가하면 `얕은 복사`가 일어난다는 것이다. <br>
 말로 해서는 어려운데 바로 예시로 보면 다음과 같다.
 
 ```cs
