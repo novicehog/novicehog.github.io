@@ -810,3 +810,104 @@ public void Update()
     }
 }
 ```
+
+
+나머지 코드들은 State추가나 Transition 추가를 담당하는 함수, SendMessage함수 등의 여러 오버로딩 들이다.
+
+### 사용 예시
+
+걷기와 뛰기의 두가지 상태를 만들어줬다.
+
+```cs
+public class WalkState : State<Entity>
+{
+    public override void Enter()
+    {
+        Debug.Log("<color=green>걷기</color> 상태 진입");
+    }
+    public override void Update()
+    {
+        Debug.Log("<color=green>걷는</color> 중");
+    }
+    public override void Exit()
+    {
+        Debug.Log("<color=green>걷기</color> 상태 탈출");
+    }
+}
+```
+
+
+```cs
+public class RunState : State<Entity>
+{
+    public override void Enter()
+    {
+        Debug.Log("<color=red>뛰기</color> 시작!");
+    }
+
+    public override void Update()
+    {
+        Debug.Log("<color=red>뛰는</color> 중");
+    }
+
+    public override void Exit()
+    {
+        Debug.Log("<color=red>뛰기</color> 탈출!");
+    }
+}
+```
+<br>
+
+상태머신 또한 다음과 같이 간단하게 추가해주었다.
+
+```cs
+public class EntityStateMachine : StateMachine<Entity>
+{
+    protected override void AddStates()
+    {
+        AddStates<WalkState>();
+        AddStates<RunState>();
+    }
+
+    protected override void MakeTransitions()
+    {
+        MakeTransitions<WalkState, RunState>(state => Owner.speed >= 5);
+        MakeTransitions<RunState, WalkState>(state => Owner.speed < 5);
+    }
+}
+```
+
+
+<br>
+
+이러면 이제 Entity라는 클래스를 만들고 간단하게 speed 변수만 shift키를 누름에 따라 바꿔주도록 하였다.
+
+```cs
+public class Entity : MonoBehaviour
+{
+    EntityStateMachine entityStateMachine = new EntityStateMachine();
+
+    public float speed = 0;
+    void Start()
+    {
+        entityStateMachine.Setup(this);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetKey(KeyCode.LeftShift)) 
+            { speed = 10; }
+        else
+            { speed = 3; }
+
+        entityStateMachine.Update();
+    }
+}
+```
+
+<br>
+
+실행해보면 Shift키를 누르고 있을 경우 Entity의 speed가 바뀌게 되고 그로인해 상태가 변환되어 각 상태들의 Enter, Update, Exit함수가 실행됨을 볼 수 있다.
+
+![state머신 테스트](https://github.com/novicehog/comments/assets/131991619/038e2e8c-ea72-4023-8a6c-749c1e548091)
