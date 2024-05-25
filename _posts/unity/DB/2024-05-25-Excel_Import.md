@@ -115,3 +115,11 @@ public class Test : MonoBehaviour
 
 
 <img width="277" alt="image" src="https://github.com/novicehog/comments/assets/131991619/a5bba167-d955-409d-aa25-c796686ad677">
+
+
+## 요약
+1. Excel importer 설치 후 프로젝트로 가져오기
+2. Excel 파일 만들고 프로젝트로 가져오기
+3. 파싱할 직렬화 클래스 만들기
+4. Create Excel Script 후 만들어진 파일의 List의 제네릭 타입을 만들어둔 클래스로 수정
+5. Excel 파일 ReImport후 만들어진 스크립터블 오브젝트로 유니티에서 데이터 사용
