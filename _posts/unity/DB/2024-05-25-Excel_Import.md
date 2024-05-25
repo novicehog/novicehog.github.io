@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "Finite State Machine(FSM) 유한 상태 머신"
+title:  "Unity에서 Excel import 하기"
 categories: 
     - Unity
 tag: [Unity]
