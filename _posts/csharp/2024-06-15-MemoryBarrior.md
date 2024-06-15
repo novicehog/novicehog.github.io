@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "[C#] 쓰레드 사용"
+title:  "[C#] 메모리 베리어"
 categories: 
     - C Sharp
 tag: [c#]
@@ -26,201 +26,66 @@ last_modified_at: 2024-06-15
 이 글은 Rookiss님의  **[C#과 유니티로 만드는 MMORPG 게임 개발 시리즈] Part4: 게임 서버**를 보고 헷갈리는 부분 위주로 정리한 글입니다. 틀리거나 부족한 부분이 있을 수 있습니다.
 {: .notice--warning}
 
-## Thread 사용
-C#에서는 Thread기능을 지원하는 `Thread`클래스가 있다. <br>
-Thread클래스를 통해 Thread를 생성하고 함수를 실행하는 방법은 다음과 같다.
+## 메모리 베리어
+싱글 쓰레드 환경에서는 문제되지 않던 코드가 `멀티 쓰레드 환경에서 문제가 발생`하는 경우는 매우 잦다.<br>
+이중 한 가지는 바로 하드웨어적 최적화와 관련되어 있다. <br>
 
+먼저 다음의 코드를 보자.
+밑의 코드는 x y r1 r2의 정적 변수들을 가지고 있으며 각각 두 개의 쓰레드에서 `y에 1을 Store하고 x를 Load하여 r1에 저장`, `x에 1을 Store하고 y를 Load하여 r2에 저장`의 기능을 수행한다.
+
+메인 함수에서는 무한 루프를 돌며 두 쓰레드를 실행하고 r1과 r2모두 0일 경우 루프를 빠져나온다.
 
 ```cs
-using System.Threading;
-
 internal class Program
 {
-    static void MainThread()
+    static int x = 0;
+    static int y = 0;
+    static int r1 = 0;
+    static int r2 = 0;
+
+    static void Thread_1()
     {
-        for(int i = 0; i < 10; i++)
+        y = 1;          // Store y
+
+        r1 = x;         // Load x
+    }
+
+    static void Thread_2()
+    {
+        x = 1;          // Store x
+
+        r2 = y;         // Load y
+    }
+
+    static void Main(string[] args)
+    {
+        int count = 0;
+        while (true)
         {
-            Console.WriteLine("Hello Thread");
-        }
-    }
+            count++;
+            x = y = r1 = r2 = 0;
 
-    static void Main(string[] args)
-    {
-        Thread t = new Thread(MainThread);  // 쓰레드를 생성 (매개변수로 함수를 받음)
-        t.Start();                          // 쓰레드 시작
-    }
-}
-```
+            Task t1 = new Task(Thread_1);
+            Task t2 = new Task(Thread_2);
+            t1.Start();
+            t2.Start();
 
+            Task.WaitAll(t1, t2);
 
-C#에서 제공하는 Thread는 기본적으로 `foreground`에서 쓰레드가 실행된다. <br>
-그렇기 때문에 Main함수가 종료되어도 쓰레드가 아직 실행중이라면 끝나지 않는다.
-
-```cs
-internal class Program
-{
-    // 영원히 지속되는 함수
-    static void MainThread() 
-    {
-        while (true) 
-            Console.WriteLine("Hello Thread");
-        
-    }
-
-    static void Main(string[] args)
-    {
-        Thread t = new Thread(MainThread);
-        t.Start();
-
-        Console.WriteLine("Main 함수 끝");
-    }
-}
-```
-
-위 코드의 경우 Main함수가 끝나도 쓰레드 함수가 계속 실행되는 모습을 볼 수 있음.
-
-![쓰레드가 무한히 지속됨](https://github.com/novicehog/comments/assets/131991619/b4a52eb9-bcb8-4ebd-bd74-e85a8c1bded7)
-
-<br>
-
-### Background 실행
-
-이 때 옵션을 추가함으로 BackGround에서 쓰레드가 생성되게 하여, 메인 함수가 종료될 때 함께 종료되게 할 수 있다.
-
-```cs
-internal class Program
-{
-    static void MainThread()
-    {
-        while (true) 
-            Console.WriteLine("Hello Thread");
-        
-    }
-
-    static void Main(string[] args)
-    {
-        Thread t = new Thread(MainThread);
-        t.IsBackground = true;                  // 추가된 옵션
-        t.Start();
-
-        Console.WriteLine("Main 함수 끝");
-    }
-}
-```
-
-![BackGround쓰레드](https://github.com/novicehog/comments/assets/131991619/ef53f0a0-5e6e-4063-9378-2e86983b52a5)
-
-
-<br>
-
-### Join 으로 쓰레드 기다리기
-
-여기서 추가로 Join이라는 함수를 사용하면 `해당 쓰레드가 종료될 때 까지 기다리는 기능`을 사용할 수도 있다.
-
-![join](https://github.com/novicehog/comments/assets/131991619/e7ea3eea-2fdf-4c8e-9732-afbf319a66e2)
-
-
-## ThreadPool 사용
-Thread 클래스를 통해 쓰레드를 생성해서 사용해도 되지만, C#에서는 `ThreadPool` 클래스로 단기 알바처럼 고용해서 사용할 수 있는 Thread도 있다.<br>
-`ThreadPool`는 쉽게 말해서 쓰레드의 생성과 관리를 자동으로 해주는 클래스이다. 사용은 다음과 같다.
-
-```cs
-internal class Program
-{
-    static void MainThread(object state)
-    {
-        for (int i = 0; i < 5; i++)
-            Console.WriteLine("Hello Thread");
-    }
-
-    static void Main(string[] args)
-    {
-        ThreadPool.QueueUserWorkItem(MainThread);
-    }
-}
-```
-
-<br>
-
-ThreadPool로 사용되는 쓰레드는 기본적으로 Backgound로 실행되기 때문에 `Main함수가 종료되면 함께 종료`된다.
-
-### TheadPool의 주의점
-ThreadPool의 경우는 동시에 돌아갈 수 있는 `Thread의 개수가 제한`되어있다.<br>
-그렇기 떄문에 만약 오랜 시간 작업을 하는 쓰레드를 사용할 경우 ThreadPool이 먹통이 될 수 있다.<br>
-
-밑의 코드를 봐보면 `최대 쓰레드의 개수가 5개`로 설정되어 있다. <br>
-이때 영원히 실행되는 5개의 쓰레드를 만들면 최대 쓰레드 개수가 되었기 때문에 쓰레드가 추가로 실행되지 못한다.
-
-```cs
-internal class Program
-{
-    static void MainThread(object state)
-    {
-        for (int i = 0; i < 5; i++)
-            Console.WriteLine("Hello Thread");
-    }
-
-    static void Main(string[] args)
-    {
-        ThreadPool.SetMinThreads(1, 1);     // 최소 1개
-        ThreadPool.SetMaxThreads(5, 5);     // 최대 5개
-
-        // 영원히 지속되는 5개 쓰레드
-        for (int i = 0; i < 5; i++)
-            ThreadPool.QueueUserWorkItem((obj) => { while (true) { } });
-
-        // 이 쓰레드는 실행되지 못함
-        ThreadPool.QueueUserWorkItem(MainThread);
-
-
-        while(true) { };
-    }
-}
-```
-<br>
-
-![먹통이 되어버림](https://github.com/novicehog/comments/assets/131991619/cc49e31c-6415-41b9-8711-d2842314c88c)
-
-<br>
-
-이러한 이유 떄문에 TaskPool은 짧은 작업의 쓰레드만 실행되는것이 적합하다.
-
-
-### Task 이용하여 ThreadPool의 문제 해결 
-Task 클래스를 이용하면 긴 작업을 수행하는 Thread의 경우 `별도로 처리함`으로 먹통이 되는 현상을 방지할 수 있다.
-
-밑의 코드에서는 영원히 지속되는 쓰레드를 Task를 통해 생성(Task로 생성하면 ThreadPool에 담김) 했지만, Task생성자의 두 번째 인자로 옵션을 추가함으로
-`긴 작업을 별도 처리함으로 먹통 현상을 피할 수 있다.`
-
-```cs
-internal class Program
-{
-    static void MainThread(object state)
-    {
-        for (int i = 0; i < 5; i++)
-            Console.WriteLine("Hello Thread");
-    }
-
-    static void Main(string[] args)
-    {
-        ThreadPool.SetMinThreads(1, 1);     // 최소 1개
-        ThreadPool.SetMaxThreads(5, 5);     // 최대 5개
-
-        // 영원히 지속되는 쓰레드 5개, LongRunning임을 명시
-        for (int i = 0; i < 5; i++)
-        {
-            Task t = new Task(() => { while (true) { } }, TaskCreationOptions.LongRunning);
-            t.Start();
+            if (r1 == 0 && r2 == 0)
+                break;
         }
 
-        ThreadPool.QueueUserWorkItem(MainThread);
-
-        while(true) { };
+        Console.WriteLine($"{count}번 만에 빠져나옴");
     }
 }
 ```
+<br>
+
+이 코드에서 경우의 수를 따져봐도 r1과 r2가 동시에 0이되는 상황은 보이지 않는다. 그러므로
+정상적인 상황이라면 메인 함수는 영원히 끝나지 않을 것이다.
+
+하지만 실행해보면 그냥 끝나버리게 된다.
 
 
-![Task](https://github.com/novicehog/comments/assets/131991619/d8bdc14d-5b48-4770-9c79-4f5d22531526)
-
-
+![image](https://github.com/novicehog/comments/assets/131991619/32080ba8-fc8b-4ab4-8609-cb422a4e97b0)
