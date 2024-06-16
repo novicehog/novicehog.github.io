@@ -140,6 +140,206 @@ internal class Program
 ![문제 해결](https://github.com/novicehog/comments/assets/131991619/c1573f29-5385-4f37-a439-fdd70a867e05)
 
 
-다만 명심해야할 점은 원자성이 보장되는 작업은 당연하게도 기존의 작업보다 성능상으로 효율이 좋지 못하다.
 
+
+
+### Monitor 클래스 이용하기
+Interlocked클래스는 ++이나 --같은 미리 정해진 작업을 원자성을 보장한다면, Monitor클래스는 내가 `직접 원자성을 보장할 영역을 지정`한다.
+
+Monitor.Enter(object)로 영역의 시작을 알리고 Monitor.Exit(object)로 영역의 끝을 알린다.
+
+예제는 다음과 같다.
+
+```cs
+internal class Program
+{
+
+    static int number = 0;
+    static object _obj = new object();
+
+    static void Thread_1()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            Monitor.Enter(_obj);
+
+            number++;
+
+            Monitor.Exit(_obj);
+        }
+    }
+
+    static void Thread_2()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            Monitor.Enter(_obj);
+
+            number--;
+
+            Monitor.Exit(_obj);
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        Task t1 = new Task(Thread_1);
+        Task t2 = new Task(Thread_2);
+        t1.Start();
+        t2.Start();
+
+        Task.WaitAll(t1,t2);
+
+        Console.WriteLine(number);
+    }
+}
+```
+<br>
+
+주의해야할 점은 Enter다음에 Exit를 하지 않는 경우인데, Exit를 하지 않는다면 다른 작업들은 무한정 Enter함수에서 기다리게 되어 `DeadLock` 현상이 발생한다.<br>
+
+```cs
+internal class Program
+{
+    static int number = 0;
+    static object _obj = new object();
+
+    static void Thread_1()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            Monitor.Enter(_obj);
+
+            number++;
+            
+            // 데드락이 발생하는 조건문
+            if (number > 500)
+                return;
+
+            Monitor.Exit(_obj);
+        }
+    }
+
+    static void Thread_2()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            // 데드락이 걸려서 무한정 기다리게 됨
+            Monitor.Enter(_obj);
+
+            number--;
+
+            Monitor.Exit(_obj);
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        Task t1 = new Task(Thread_1);
+        Task t2 = new Task(Thread_2);
+        t1.Start();
+        t2.Start();
+
+        Task.WaitAll(t1,t2);
+
+        Console.WriteLine(number);
+    }
+}
+```
+
+<br>
+
+
+이러한 문제는 Try Finally을 사용하여 예방할 수 있다.
+
+
+```cs
+static void Thread_1()
+{
+    for (int i = 0; i < 1000000; i++)
+    {
+        Monitor.Enter(_obj);
+
+        try
+        {
+            number++;
+            if (number > 500)
+                return;
+        }
+        finally
+        {
+            Monitor.Exit(_obj);
+        }
+    }
+}
+
+static void Thread_2()
+{
+    for (int i = 0; i < 1000000; i++)
+    {
+        Monitor.Enter(_obj);
+
+        try
+        {
+            number--;
+                return;
+        }
+        finally
+        {
+            Monitor.Exit(_obj);
+        }
+    }
+}
+```
+
+
+### lock
+Monitor클래스의 try Finally이 지저분하게 보인다면 lock키워드로 간단하게 구현할 수 있다.
+
+이런 식으로 코드를 작성하면 `원자성을 보장하며 데드락을 방지`할 수 있다.
+
+```cs
+internal class Program
+{
+    static int number = 0;
+    static object _obj = new object();
+
+    static void Thread_1()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            // 데드락 방지
+            lock (_obj)
+            {
+                number++;
+                if (number > 500)
+                    return;
+            }
+        }
+    }
+
+    static void Thread_2()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            lock (_obj)
+            {
+                number--;
+            }
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        Task t1 = new Task(Thread_1);
+        Task t2 = new Task(Thread_2);
+        t1.Start();
+        t2.Start();
+
+        Task.WaitAll(t1,t2);
+
+        Console.WriteLine(number);
+    }
+}
+```
 
