@@ -146,7 +146,8 @@ internal class Program
 ### Monitor 클래스 이용하기
 Interlocked클래스는 ++이나 --같은 미리 정해진 작업을 원자성을 보장한다면, Monitor클래스는 내가 `직접 원자성을 보장할 영역을 지정`한다.
 
-Monitor.Enter(object)로 영역의 시작을 알리고 Monitor.Exit(object)로 영역의 끝을 알린다.
+Monitor.Enter(object)로 영역의 시작을 알리고 Monitor.Exit(object)로 영역의 끝을 알린다.<br>
+여기서 인자로 넣는 object는 쉽게 말해서 자물쇠이다. `동일한 오브젝트에 대해 lock`을 걸면, 해당 오브젝트를 사용하는 다른 스레드는 `락이 해제될 때까지 대기`하게 된다.
 
 예제는 다음과 같다.
 
