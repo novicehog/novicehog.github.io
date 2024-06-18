@@ -143,11 +143,14 @@ internal class Program
     static void WriteThread()
     {
         // _number의 값을 바꾸고 5000만큼 잠깐 쉬었다가 WriteLock을 품
+        // 중복하여 사용하여도 됨
+        //_lock.WriteLock();
         _lock.WriteLock();
         _number += 100;
         Console.WriteLine("값 수정됨");
         Thread.Sleep(5000);
         _lock.WriteUnlock();
+        //_lock.WriteUnlock();
     }
 
 
