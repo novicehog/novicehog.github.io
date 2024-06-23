@@ -65,6 +65,7 @@ internal class Listener
         RegisterAccept(args);
     }
 
+    // RegisterAccept와 OnAcceptCompleted는 서로 루프를 돌면서 호출됨
     void RegisterAccept(SocketAsyncEventArgs args)
     {
         // 전에 등록된 소켓 정보를 초기화
@@ -146,3 +147,4 @@ internal class Program
 ```
 
 
+### 비동기 recv, send
