@@ -29,7 +29,7 @@ last_modified_at: 2024-02-02
 멀티플레이 관련 코드와 자료들을 모아놓은 곳.
 이곳에 facepunchsteamworks와 호환되는 것을 사용.
 
-[다운로드 링크](multiplayer-community-contributions)
+[다운로드 링크](https://github.com/Unity-Technologies/multiplayer-community-contributions)
 
 ![image](https://github.com/novicehog/comments/assets/131991619/1cbddb16-bc95-487d-86e4-72612a70492b)
 
