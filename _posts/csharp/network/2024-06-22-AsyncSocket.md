@@ -120,8 +120,10 @@ public abstract class Session
 
     object _lock = new object();
     // Send와 관련된 필드들
-    Queue<byte[]> _sendQueue = new Queue<byte[]>();                 // 보낼 메세지을 잠깐 담아둘 곳
-    List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>(); // 보낼 메세지들을 한 번에 묶어서 보내기 위함
+    // 이미 SendAsync가 실행 돼었을 때 Send가 추가로 호출될 경우 보낼 메세지을 잠깐 담아둘 곳
+    Queue<byte[]> _sendQueue = new Queue<byte[]>();                 
+    // Send에 담겨서 보내지는 메세지들 
+    List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>(); 
     SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();    // Send전용 SocketAsyncEventArgs
 
     SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();    // Recv전용 SocketAsyncEventArgs
