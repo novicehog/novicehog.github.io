@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "DirectX11 Device, DeviceContext, SwapChain"
+title:  "[DirectX11] Device, DeviceContext, SwapChain"
 categories: 
     - Graphics
 tag: [DirectX11]
