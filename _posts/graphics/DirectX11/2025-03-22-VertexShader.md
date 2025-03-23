@@ -74,8 +74,9 @@ struct VS_INPUT
 ```
 
 
-이 INPUT 데이터를 통해 VS에서 가공해서 내보낼 OUTPUT데이터도 struct로 정의해주면 된다.
-OUTPUT 데이터에서 중요한 점은 데이터 정의는 자유롭지만 SV_POSITION의 변수를 무조건 선언해주어야 한다.
+이 INPUT 데이터를 통해 VS에서 가공해서 내보낼 OUTPUT데이터도 struct로 정의해주면 된다.<br>
+OUTPUT 데이터에서 중요한 점은 데이터 정의는 자유롭지만 `SV_POSITION`의 변수를 무조건 선언해주어야 한다.
+output으로 넘겨주는 SV_Position은 화면상에서의 x,y값과 깊이를 나타내는 z값을 변환행렬을 통해 구해준 뒤 반환해야한다.
 
 ```hlsl
 struct VS_OUTPUT
@@ -89,7 +90,9 @@ struct VS_OUTPUT
 
 모든 준비가 끝났으면 VS함수를 조작하면 된다.<br>
 지금은 따로 할수있는게 없어서 그대로 넘겨주지만 <br>
-나중에 Constant Buffer(상수 버퍼)를 이용해서 여러 변환행렬을 넘겨주어 이곳에서 계산이 가능하다.
+나중에 Constant Buffer(상수 버퍼)를 이용해서 여러 변환행렬을 받아 이곳에서 계산 후 넘겨주어야 한다.<br>
+
+
 
 
 ```hlsl
