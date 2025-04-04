@@ -32,12 +32,12 @@ AI Navigation은 크게 세 가지로 이루어져 있다.
 ### NavMesh Surface
 여러가지 설정값들을 고려하여 Agent가 움직일 수 있는 영역을 정의하는데 사용된다.<br>
 
-![surface Component](https://github.com/user-attachments/assets/7cc6eca7-c771-4e80-98f3-6d6c90029dc1)
+![Image](https://github.com/user-attachments/assets/bfeec8de-74ff-4c62-9c8c-ceeb9bce74fa)
 
 
 <details>
 <summary>AgentType</summary>
-
+<div markdown="1"> 
 
 영역을 지나다닐 Agent의 Type을 지정한다.<br>
 AgentType은 Window -> AI -> Navigation 창에서 새로 만들 수 있으며
@@ -45,7 +45,7 @@ Agent의 여러 설정값들을 조절한다.
 
 ![AgentType](https://github.com/user-attachments/assets/720ab2c0-de93-4ad5-ba47-fda045ac7f0c)
 
-
+</div>
 </details>
 
 
