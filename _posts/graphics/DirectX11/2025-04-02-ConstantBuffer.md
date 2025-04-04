@@ -123,5 +123,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 VS 영역에서 output.position의 값도 점점 증가하여 이동하는 것을 볼 수 있다.
 ![결과](https://github.com/user-attachments/assets/5068dc08-1d73-4700-91b8-1069eb80be54)
 
+![렌더링결과](https://github.com/user-attachments/assets/67f606b2-8856-4fc3-867c-fd6d49ee3b01)
+
 # 결론
 - `Constant Buffer(상수 버퍼)`를 이용하여 `GPU밖(CPU)에서 셰이더 파일 내에서 사용할 값을 넘겨줄 수 있다.`
