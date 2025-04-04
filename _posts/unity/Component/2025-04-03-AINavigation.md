@@ -49,8 +49,25 @@ Agent의 여러 설정값들을 조절한다.
 </details>
 
 
-Default Area : 기본으로 설정할 영역을 지정
-
+Default Area : 기본으로 설정할 영역을 지정.
+Generate Links : Links를 자동으로 생성해줌
 Use Geometry : Nav Mesh를 생성할 기준을 정함.
     Render Meshes -> Mesh를 기준으로 생성
     Physics Collider -> Collider를 기준으로 생성
+
+<details>
+<summary>Object Collection</summary>
+<div markdown="1"> 
+NavMesh를 만들 영역을 상세하게 지정할 수 있다.
+
+Collect Objects : 어떤 오브젝를 대상으로 NavMesh를 만들지 정한다.
+    All Game Objects : 씬 내의 모든 오브젝트를 대상으로 함.
+    Volume : NavMesh Surface 컴포넌트를 가진 오브젝트를 기준으로 상자 모양의 영역 생성.
+    Current Object Hierarchy : NavMesh Surface 컴포넌트를 가진 오브젝트의 자식 게임오브젝트들을 대상으로 함.
+    NavMeshModifier Comonent Only : NavMeshModifier 컴포넌트를 가진 게임오브젝트들을 대상으로 함.
+Include Layers : 대상 Layers
+
+</div>
+</details>
+
+모든 값을 설정하고 Bake 해주면 NavMesh 생성이 완료된다.
