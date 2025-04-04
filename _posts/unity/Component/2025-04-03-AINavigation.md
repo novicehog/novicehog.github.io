@@ -37,7 +37,7 @@ AI Navigation은 크게 세 가지로 이루어져 있다.
 
 <details>
 <summary>AgentType</summary>
-<div markdown="1"> 
+
 
 영역을 지나다닐 Agent의 Type을 지정한다.<br>
 AgentType은 Window -> AI -> Navigation 창에서 새로 만들 수 있으며
@@ -45,7 +45,7 @@ Agent의 여러 설정값들을 조절한다.
 
 ![AgentType](https://github.com/user-attachments/assets/720ab2c0-de93-4ad5-ba47-fda045ac7f0c)
 
-</div>
+
 </details>
 
 
@@ -71,3 +71,5 @@ Include Layers : 대상 Layers
 </details>
 
 모든 값을 설정하고 Bake 해주면 NavMesh 생성이 완료된다.
+
+### Agent
