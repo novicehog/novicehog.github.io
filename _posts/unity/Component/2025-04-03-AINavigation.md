@@ -32,7 +32,7 @@ AI Navigation은 크게 세 가지로 이루어져 있다.
 ### NavMesh Surface
 여러가지 설정값들을 고려하여 Agent가 움직일 수 있는 영역을 정의하는데 사용된다.<br>
 
-![Image](https://github.com/user-attachments/assets/bfeec8de-74ff-4c62-9c8c-ceeb9bce74fa)
+![Image](https://github.com/user-attachments/assets/bfeec8de-74ff-4c62-9c8c-ceeb9bce74fa/raw)
 
 
 <details>
